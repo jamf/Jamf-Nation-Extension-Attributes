@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute><displayName>OS - Internet Sharing Disabled</displayName><displayInCategory>Security Reporting</displayInCategory><dataType>string</dataType><description>This attribute verifies that internet sharing is disabled.
+</description><scriptContentsMac>#!/bin/sh
+
+if [ "`/usr/libexec/PlistBuddy -c "Print :NAT:Enabled" /Library/Preferences/SystemConfiguration/com.apple.nat.plist`" == 1 ]; then
+	echo "&lt;result&gt;Fail (Internet Sharing Enabled)&lt;result&gt;"
+else
+	echo "&lt;result&gt;Pass (Internet Sharing Disabled)&lt;result&gt;"
+fi
+</scriptContentsMac><scriptContentsWin>
+</scriptContentsWin></extensionAttribute>

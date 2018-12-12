@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Java Plugin Version</displayName>
+<description>This will determine the version/release number of Oracle's Java7 and Apple's Java6 plugin.&#13;
+The plugin is located at ~/Library/Internet Plug-Ins/JavaAppletPlugin.plugin&#13;
+&#13;
+Note:  A different numbering schema is used for v6 &amp; v7.  Searches MUST include an "AND" between two version strings.  IE,    version-is not-14.6.0       AND     version-is not-1.7.15</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+############################################################################&#13;
+# Extension Attribute checks to display Oracle Java plugin Version&#13;
+# Cobbled together from other's hard work by Christopher Miller&#13;
+# for ITSD-ISS of JHU-APL, Dated 2012-11-09&#13;
+############################################################################&#13;
+JavaPluginVersion=`/usr/bin/defaults read /Library/Internet\ Plug-Ins/JavaAppletPlugin.plugin/Contents/Info CFBundleVersion`&#13;
+echo "&lt;result&gt;$JavaPluginVersion&lt;/result&gt;"&#13;
+&#13;
+exit 0</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Number of Cached Packages</displayName>
+<description>Counts the number of files in /Library/Application Support/JAMF/Waiting Room, excluding XML files.</description>
+<dataType>number</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+&#13;
+# Count the number of non-xml files in /Library/Application Support/JAMF/Waiting Room&#13;
+number=`ls -1 /Library/Application\ Support/JAMF/Waiting\ Room/ | grep -v xml | wc -l`&#13;
+&#13;
+# Remove leading space from string&#13;
+number=`echo $number`&#13;
+&#13;
+# Echo result to JSS&#13;
+echo "&lt;result&gt;$number&lt;/result&gt;"&#13;
+&#13;
+exit 0</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

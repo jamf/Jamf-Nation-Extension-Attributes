@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE extensionAttribute PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<extensionAttribute>
+  <displayName>get_github_version</displayName>
+  <displayInCategory/>
+  <dataType>string</dataType>
+  <description>Uses CFBundleVersion to get integer version number, rather than the named version title reported by the JSS in the Application Version.</description>
+  <scriptContentsMac>#!/bin/sh
+
+#
+# checks for github.app on machine
+# using version integer rather than name
+# intended for scoping updates (with patchoo)
+# by github.com/smashism
+# last updated 2015-03-20
+#
+
+if [ -f "/Applications/Github.app/Contents/Info.plist" ] ; then
+	VERSION=$( defaults read "/Applications/Github.app/Contents/Info.plist" CFBundleVersion )
+else
+	VERSION="Not installed."
+fi
+
+echo "&lt;result&gt;$VERSION&lt;/result&gt;"</scriptContentsMac>
+</extensionAttribute>

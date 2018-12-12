@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute>
+<displayName>Oracle Java 8 JDK</displayName>
+<description>Returns the installed version of Oracle Java 8 JDK</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+&#13;
+ExtensionVersion=""&#13;
+# Find all the JDKs&#13;
+# Cut out the directory slashes from the find command&#13;
+# Sort the results in reverse order&#13;
+# Get the first result from the sort&#13;
+# Cut that value to a "1.8.0_45" format&#13;
+if [ -d /Library/Java/JavaVirtualMachines ]; then&#13;
+	cd /Library/Java/JavaVirtualMachines&#13;
+	ExtensionVersion=$(find ./  -d 1 -name "*.jdk" | grep -v '1.6.0' | cut -d '/' -f3 | sort -r | head -n 1 | cut -d '.' -f1,2,3 | cut -d 'k' -f2 )&#13;
+fi&#13;
+&#13;
+if [ "$ExtensionVersion" == "" ]; then&#13;
+		ExtensionVersion="Not Installed"&#13;
+fi&#13;
+&#13;
+echo "&lt;result&gt;$ExtensionVersion&lt;/result&gt;"&#13;
+&#13;
+exit 0</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

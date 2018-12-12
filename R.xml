@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute>
+<displayName>R</displayName>
+<description>Returns the installed version of R</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+&#13;
+ExtensionVersion=""&#13;
+if [ -f /Library/Frameworks/R.framework/Versions/Current/Resources/Info.plist ]; then&#13;
+	ExtensionVersion=$(defaults read  /Library/Frameworks/R.framework/Versions/Current/Resources/Info.plist  CFBundleVersion)&#13;
+fi&#13;
+&#13;
+if [ "$ExtensionVersion" == "" ]; then&#13;
+	ExtensionVersion="Not Installed"&#13;
+fi&#13;
+&#13;
+echo "&lt;result&gt;$ExtensionVersion&lt;/result&gt;"&#13;
+&#13;
+exit 0</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

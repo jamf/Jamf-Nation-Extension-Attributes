@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Chrome Extensions</displayName>
+<description>Displays Name, Version and ID of installed Google Chrome Extensions for current or last user.&#13;
+&#13;
+By default, data is displayed as:&#13;
+&#13;
+Name: Extension Name&#13;
+Version: Extension Version&#13;
+ID: Extension ID.&#13;
+&#13;
+However, if further data analysis is needed, an alternate output is available:&#13;
+&#13;
+Name;Version;ID&#13;
+&#13;
+The default output looks much prettier in the JSS, but the alternative output may be more useful.  &#13;
+&#13;
+To use the alternate output, simply comment out line:&#13;
+&#13;
+echo -e "Name: $reportedName \nVersion: $version \nID: $extID \n"&#13;
+&#13;
+And uncomment line:&#13;
+&#13;
+echo -e "$reportedName;$version;$extID"</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+&#13;
+# Setting IFS Env to only use new lines as field seperator &#13;
+IFS=$'\n'&#13;
+&#13;
+currentUser=`ls -l /dev/console | awk {' print $3 '}`&#13;
+lastUser=`defaults read /Library/Preferences/com.apple.loginwindow lastUserName`&#13;
+&#13;
+if [[ "$currentUser" = "" || "$currentUser" = "root" ]]&#13;
+	then userHome=`/usr/bin/dscl . -read /Users/$lastUser NFSHomeDirectory | awk -F ": " '{print $2}'`&#13;
+	else userHome=`/usr/bin/dscl . -read /Users/$currentUser NFSHomeDirectory | awk -F ": " '{print $2}'`&#13;
+fi&#13;
+&#13;
+createChromeExtList ()&#13;
+{&#13;
+for manifest in $(find "$userHome/Library/Application Support/Google/Chrome/Default/Extensions" -name 'manifest.json')&#13;
+	do &#13;
+		name=$(cat $manifest | grep '"name":' | awk -F "\"" '{print $4}')&#13;
+		if [[ `echo $name | grep "__MSG"` ]]&#13;
+			then&#13;
+				msgName="\"`echo $name | awk -F '__MSG_|__' '{print $2}'`\":"&#13;
+				if [ -f $(dirname $manifest)/_locales/en/messages.json ]&#13;
+					then reportedName=$(cat $(dirname $manifest)/_locales/en/messages.json | grep -i -A 3 "$msgName" | grep "message" | head -1 | awk -F ": " '{print $2}' | tr -d "\"")&#13;
+				elif [ -f $(dirname $manifest)/_locales/en_US/messages.json ]&#13;
+					then reportedName=$(cat $(dirname $manifest)/_locales/en_US/messages.json | grep -i -A 3 "$msgName" | grep "message" | head -1 | awk -F ": " '{print $2}' | tr -d "\"")&#13;
+				fi&#13;
+			else&#13;
+				reportedName=$(cat $manifest | grep '"name":' | awk -F "\"" '{print $4}')&#13;
+		fi&#13;
+		version=$(cat $manifest | grep '"version":' | awk -F "\"" '{print $4}')&#13;
+		extID=$(basename $(dirname $(dirname $manifest)))&#13;
+		&#13;
+		# This is the default output style - looks nice in JSS&#13;
+		# Comment out line below if you wish to use alternate output&#13;
+	 	echo -e "Name: $reportedName \nVersion: $version \nID: $extID \n"&#13;
+	 	&#13;
+	 	# This is the alternate output style - looks ugly in JSS, but possibly more useful&#13;
+	 	# Uncomment line below to use this output instead&#13;
+	 	#echo -e "$reportedName;$version;$extID"&#13;
+ done&#13;
+ }&#13;
+&#13;
+if [ -d "$userHome/Library/Application Support/Google/Chrome/Default/Extensions" ]&#13;
+        then result="`createChromeExtList`"&#13;
+        else result="NA"&#13;
+fi&#13;
+&#13;
+echo "&lt;result&gt;$result&lt;/result&gt;"</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

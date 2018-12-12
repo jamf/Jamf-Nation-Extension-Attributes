@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE extensionAttribute PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<extensionAttribute>
+  <displayName>Sorted Configuration Profile List</displayName>
+  <displayInCategory/>
+  <dataType>string</dataType>
+  <description>Produces a sorted list of Configuration Profiles applied to a machine.</description>
+  <scriptContentsMac>#!/bin/sh
+
+profiles=`profiles -C -v | awk -F: '/attribute: name/{print $NF}' | sort`
+echo "&lt;result&gt; $profiles &lt;/result&gt;"
+
+exit 0</scriptContentsMac>
+</extensionAttribute>

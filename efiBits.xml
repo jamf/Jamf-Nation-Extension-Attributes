@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE extensionAttribute PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<extensionAttribute>
+  <displayName>EFI Bits</displayName>
+  <displayInCategory/>
+  <dataType>string</dataType>
+  <description>Returns returns the Mac's EFI bits.</description>
+  <scriptContentsMac>#!/bin/bash
+
+# returns the Mac's EFI bits
+
+echo "&lt;result&gt;"`ioreg -l -p IODeviceTree | awk '/firmware-abi/ { split($0, line, "\""); printf("%s\n", line[4]); }'`"&lt;/result&gt;"</scriptContentsMac>
+</extensionAttribute>

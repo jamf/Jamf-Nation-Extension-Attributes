@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE extensionAttribute PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<extensionAttribute>
+  <displayName>SecureDoc - Encryption Status (v 5.3.31)</displayName>
+  <displayInCategory/>
+  <dataType>string</dataType>
+  <description>This attribute returns the Disk Encryption Status for WinMagic SecureDoc on the boot disk.  Examples of returned values include: "Software Encrypted", "Partially Encrypted", "Unprotected", "Hardware Encrypted", "Not Encrypted", and "Not Installed".  This attribute template applies to WinMagic SecureDoc (v 5.3.31).</description>
+  <scriptContentsMac>#!/bin/sh
+#This script has been verified to work on WinMagic SecureDoc (v 5.3.31).
+
+#Check to see if SecureDoc is installed
+if [ -f "/WinMagic/com.winmagic.registry.plist" ]; then
+	result=`/usr/bin/defaults read /WinMagic/com.winmagic.registry | grep CasperEncryptionStatus | awk '{print $3}' | sed 's/;//g'`
+	if [ "$result" == "4097" ]; then
+		echo "&lt;result&gt;Software Encrypted&lt;/result&gt;"
+	elif [ "$result" == "4112" ]; then
+		echo "&lt;result&gt;Partially Encrypted&lt;/result&gt;"
+	elif [ "$result" == "4352" ]; then
+		echo "&lt;result&gt;Unprotected&lt;/result&gt;"
+	elif [ "$result" == "4353" ]; then
+		echo "&lt;result&gt;Hardware Encrypted&lt;/result&gt;"
+	else
+		echo "&lt;result&gt;Not Encrypted&lt;/result&gt;"
+	fi
+else
+	echo "&lt;result&gt;Not installed&lt;/result&gt;"
+fi</scriptContentsMac>
+</extensionAttribute>

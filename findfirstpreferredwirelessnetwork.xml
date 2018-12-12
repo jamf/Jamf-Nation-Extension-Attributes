@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE extensionAttribute PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<extensionAttribute>
+  <displayName>Find First Preferred Wireless Network</displayName>
+  <displayInCategory/>
+  <dataType>string</dataType>
+  <description>This will provide the name of the wireless network that is first on the list of preferred wireless networks.</description>
+  <scriptContentsMac>#!/bin/bash
+# Extension attribute to find the wireless network that's first on the list
+# Lauren Caliolio 8/22/2014
+# Contact me: laurendc@gmail.com, twitter @laurendc or JAMFNation: laurendc
+
+# Find device on hardware irregardless of model
+WIFI_DEVICE=`/usr/sbin/networksetup -listallhardwareports | /usr/bin/egrep -A2 'Airport|Wi-Fi' | /usr/bin/awk '/Device/ { print $2 }'`
+
+# Get name of preferred wireless network that's first on the list
+FIRST=`/usr/sbin/networksetup -listpreferredwirelessnetworks $WIFI_DEVICE | /usr/bin/awk 'NR==2{ print $1}'`
+
+/bin/echo "&lt;result&gt;"$FIRST"&lt;/result&gt;"
+</scriptContentsMac>
+</extensionAttribute>

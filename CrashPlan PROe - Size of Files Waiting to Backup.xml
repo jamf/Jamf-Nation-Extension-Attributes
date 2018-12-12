@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+  <displayName>CrashPlan PROe - Size of Files Waiting to Backup</displayName>
+  <displayInCategory>Backup</displayInCategory>
+  <description>This attribute displays the total size of the files CrashPlan PROe is waiting to back up.  This attribute applies to both Mac and Windows.</description>
+  <dataType>string</dataType>
+  <scriptContentsMac>
+#!/bin/sh
+# Modified 1/24/13
+# Third-Part Product page for CrashPlan PROe - https://jamfnation.jamfsoftware.com/viewProduct.html?id=217
+
+CP_ServerAddress="EditFromTemplate_CrashPlan_PROe_Server_Name_-_including_protocol_and_port"
+CP_AdminUsername="EditFromTemplate_CrashPlan_PROe_Service_Account_Username"
+CP_AdminPassword="EditFromTemplate_CrashPlan_PROe_Service_Account_Password"
+
+if [ "$CP_ServerAddress" == "" ] || [ "$CP_AdminUsername" == "" ] || [ "$CP_AdminPassword" == "" ];then
+        echo "&lt;result&gt;Please ensure all variables are set in the extension attribute script.&lt;/result&gt;"
+elif [ -f /Library/Application\ Support/CrashPlan/.identity ];then
+        SERVER=`echo $CP_ServerAddress | sed 's|/$||'`
+        GUID=`cat /Library/Application\ Support/CrashPlan/.identity | sed -n 's/guid=//p'`
+        
+        value=`curl -q -u "$CP_AdminUsername:$CP_AdminPassword" -k "$SERVER/api/Computer?guid=$GUID&amp;incBackupUsage=1" | sed -n 's/.*todoBytes": \([^,]*\).*/\1/p'`
+
+        kilo=$(echo "scale=2; $value / 1024" | bc )
+        kiloint=$( echo "$value / 1024" | bc )
+
+        mega=$( echo "scale=2; $kilo / 1024" | bc )
+        megaint=$( echo "$kilo / 1024" | bc )
+
+        giga=$( echo "scale=2; $mega / 1024" | bc )
+        gigaint=$( echo "$mega / 1024" | bc )
+
+        if [ $kiloint -lt 1 ] ; then
+                result="$value bytes"
+        elif [ $megaint -lt 1 ] ; then
+                result="${kilo} KB"
+        elif [ $gigaint -lt 1 ] ; then
+                result="${mega} MB"
+        else
+                result="${giga} GB"
+        fi
+
+        echo "&lt;result&gt;$result&lt;/result&gt;"
+else
+        echo "&lt;result&gt;Not installed&lt;/result&gt;"
+fi
+  </scriptContentsMac>
+  <scriptTypeWindows>VBScript</scriptTypeWindows>
+  <scriptContentsWindows>
+On Error Resume Next
+
+'Declaration of Objects, Constants, Variables
+Dim objFSO
+Dim objTextFile
+Dim strTextFile
+Dim objHTTP
+Dim arrResults
+Dim strResult
+Dim GUID
+Dim CP_ServerAddress
+Dim CP_AdminUsername
+Dim CP_AdminPassword
+Dim SERVER
+
+'Set Variables
+CP_ServerAddress = "EditFromTemplate_CrashPlan_PROe_Server_Name_-_including_protocol_and_port"
+CP_AdminUsername = "EditFromTemplate_CrashPlan_PROe_Service_Account_Username"
+CP_AdminPassword = "EditFromTemplate_CrashPlan_PROe_Service_Account_Password"
+
+'Validate Variables Have Been Set
+If CP_ServerAddress = "" Or CP_AdminUsername = "" Or CP_AdminPassword = "" Then
+	WScript.Echo "&lt;result&gt;Please ensure all variables are set in the extension attribute script.&lt;/result&gt;"
+Else
+	'Set Objects
+	Set objFSO = CreateObject("Scripting.FileSystemObject")
+	Set objHTTP = CreateObject("WinHttp.WinHttpRequest.5.1")
+
+	'Set Constants
+	Const WinHttpRequestOption_SslErrorIgnoreFlags = 4
+	Const WinHttpRequestOption_EnableHttpsToHttpRedirects = 12
+	
+	'Read in CrashPlan GUID
+	Set objTextFile = objFSO.OpenTextFile("C:\ProgramData\CrashPlan\.identity")
+	strTextFile = objTextFile.ReadAll
+	objTextFile.Close
+	arrResults=Split(strTextFile, Chr(13))
+	
+	For i = 0 to ubound(arrResults)
+		If inStr(arrResults(i), "guid") &gt; 0 Then
+			strResult = Replace(arrResults(i), "guid=", "")
+			GUID = strResult
+			strResult=""
+			Exit for
+		End if
+	Next
+
+	If GUID = "" Then
+		WScript.Echo "&lt;result&gt;Not installed&lt;/result&gt;"
+	Else
+		If Right(CP_ServerAddress,1) = "/" Then
+			SERVER = Left(CP_ServerAddress, Len(CP_ServerAddress) -1)
+		Else
+			SERVER = CP_ServerAddress
+		End if
+		
+		'Connect to the CrashPlan ProE Server Rest API
+		objHTTP.open "GET", SERVER &amp; "/api/computers?guid=" &amp; GUID &amp; "&amp;incBackupUsage=1", False 
+		
+		objHTTP.Option(WHttpRequestOption_SslErrorIgnoreFlags) = &amp;H3300
+		objHTTP.Option(WinHttpRequestOption_EnableHttpsToHttpRedirects) = True
+
+		objHTTP.SetCredentials CP_AdminUsername, CP_AdminPassword, 0
+
+		objHTTP.send
+		
+		'Parse the JSON Output
+		If objHTTP.Status = "200" Then
+			arrResults=Split(objHTTP.ResponseText, ",")
+			For i = 0 to ubound(arrResults)
+				If inStr(arrResults(i), "todoBytes") &gt; 0 Then
+					intTotalSize = Replace (arrResults(i), chr(34) &amp; "todoBytes" &amp; chr(34) &amp; ": ", "")
+					intTotalSize = CInt(Trim(intTotalSize))
+					Exit for
+				End if
+			Next
+			
+			kilo = intTotalSize / 1024
+			mega = kilo / 1024
+			giga = mega / 1024
+
+			If kilo &lt; 1 then
+				strResult = Round(intTotalSize, 2) &amp; " bytes"
+			ElseIf mega &lt; 1 then 
+				strResult = Round(kilo, 2) &amp; " KB"
+			ElseIf giga &lt; 1 Then 
+				strResult = Round(mega, 2) &amp; " MB"
+			Else
+				strResult = Round(giga, 2) &amp; " GB"
+			End If
+			
+			WScript.Echo "&lt;result&gt;" &amp; strResult &amp; "&lt;/result&gt;"
+		Else
+			WScript.Echo "&lt;result&gt;ERROR RETRIEVING DATA: " &amp; objHTTP.Status &amp; " - " &amp; objHTTP.StatusText &amp; "&lt;/result&gt;"
+		End If
+	End If
+End If
+  </scriptContentsWindows>
+</extensionAttribute>

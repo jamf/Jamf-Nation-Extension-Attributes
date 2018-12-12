@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Wireless?</displayName>
+<description>Returns Yes if Mac has a Wi-Fi or Airport Card, No if not</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+####################################################################################################&#13;
+#&#13;
+# More information: http://macmule.com/2011/09/08/need-to-find-out-if-a-mac-has-an-airport-card/&#13;
+#&#13;
+# GitRepo: https://github.com/macmule/EAHasWirelessOrAirport/&#13;
+#&#13;
+# License: http://macmule.com/license/&#13;
+#&#13;
+####################################################################################################&#13;
+&#13;
+# Checks to see if their is a hardware port called AirPort or Wi-Fi&#13;
+checkWireless=$(networksetup -listallhardwareports | egrep "Hardware Port: (Air|Wi-)" | cut -c 16-)&#13;
+&#13;
+if [ -n "${checkWireless}" ]; then&#13;
+	echo "&lt;result&gt;No&lt;/result&gt;"&#13;
+else&#13;
+	echo "&lt;result&gt;Yes&lt;/result&gt;"&#13;
+fi</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

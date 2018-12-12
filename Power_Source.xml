@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Power Source</displayName>
+<description>Check to see whether the system is running on Battery or AC Power.  </description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+###########################################&#13;
+# Check to see where power &#13;
+# is drawing on system&#13;
+# 'Battery Power' vs. 'AC Power'&#13;
+###########################################&#13;
+# by Christopher Miller &#13;
+# for ITSD-ISS of JHU-APL&#13;
+# Dated: 2016-05-24, last Mod: &#13;
+# Cobbled together from other's hard work&#13;
+###########################################&#13;
+&#13;
+#Use the power management to check &#13;
+PowerUP=$(pmset -g batt | head -n 1)&#13;
+&#13;
+#Find the time this was checked&#13;
+ShotTime=$(/bin/date)&#13;
+&#13;
+#Put it together&#13;
+result=$(echo "$PowerUP" on "$ShotTime")&#13;
+&#13;
+echo "&lt;result&gt;$result&lt;/result&gt;"&#13;
+&#13;
+exit 0 </scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

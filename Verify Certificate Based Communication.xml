@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute><displayName>Verify Certificate Based Communication</displayName><displayInCategory>JAMF Software</displayInCategory><dataType>string</dataType><description>This attribute verifies that the client has certificate based communication enabled for communications with the JSS.  Results returned are "Enabled" or "Not Enabled" based on whether the client has certificate based  profile supplied by the JSS.
+</description><scriptContentsMac>#!/bin/sh
+jamfKeychain="/Library/Application Support/JAMF/JAMF.keychain"
+
+if [ -f "$jamfKeychain" ]; then
+	echo "&lt;result&gt;Enabled&lt;/result&gt;"
+else
+	echo "&lt;result&gt;Not Enabled&lt;/result&gt;"
+fi
+</scriptContentsMac><scriptContentsWin>
+</scriptContentsWin></extensionAttribute>

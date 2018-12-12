@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Watchman Monitoring Computer URL</displayName>
+<description>Displays the URL to a monitored computer's record in Watchman Monitoring.</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+if [ -f /Library/MonitoringClient/Utilities/ExportStatus ]; then&#13;
+   echo "&lt;result&gt;`defaults read /Library/MonitoringClient/ClientData/UnifiedStatus.plist ClientURL`&lt;/result&gt;"&#13;
+else&#13;
+  echo "&lt;result&gt;Watchman Monitoring not installed&lt;/result&gt;"&#13;
+fi</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

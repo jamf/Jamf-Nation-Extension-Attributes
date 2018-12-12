@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Time Machine - Destination using tmutil</displayName>
+<description>NOTE - This EA has only been tested with OS X 10.9 and 10.10 !!&#13;
+&#13;
+Uses 'tmutil'  binary display Time Machine destination volume name and volume type.</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+enabled=`/usr/bin/defaults read /Library/Preferences/com.apple.TimeMachine AutoBackup`&#13;
+	&#13;
+if [ "$enabled" == "1" ]&#13;
+	then &#13;
+		volumeName=`/usr/bin/tmutil destinationinfo | grep "Name" | awk -F ": " '{print $2}'`&#13;
+		volumeType=`/usr/bin/tmutil destinationinfo | grep "Kind" | awk -F ": " '{print $2}'`&#13;
+		result="$volumeName ($volumeType)"&#13;
+	else&#13;
+		result="NA"&#13;
+fi&#13;
+&#13;
+echo "&lt;result&gt;$result&lt;/result&gt;"</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

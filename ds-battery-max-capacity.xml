@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute><dataType>integer</dataType><displayName>DS Battery: Max Capacity</displayName><description>This attribute returns the Max Capacity value of a notebook battery.</description><displayInCategory>Extension Attributes</displayInCategory><scriptContentsMac>#!/bin/sh
+result=$(ioreg -r -c &quot;AppleSmartBattery&quot; | awk '/MaxCap/ {print $3}')
+echo &quot;&lt;result&gt;$result&lt;/result&gt;&quot;</scriptContentsMac></extensionAttribute>

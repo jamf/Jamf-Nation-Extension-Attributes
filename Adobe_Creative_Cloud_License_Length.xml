@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute>
+<displayName>Adobe Creative Cloud License Length</displayName>
+<description>Check for the value of LicensableLEIDsLength to determine the version of the license.</description>
+<dataType>number</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+&#13;
+ExtensionVersion=""&#13;
+&#13;
+if [ -d /Library/Application\ Support/Adobe/SLCache/ ]; then&#13;
+    cd /Library/Application\ Support/Adobe/SLCache/&#13;
+    LicenseFileName=$(grep LicensableLEIDsLength ./* -l)&#13;
+    if [ -f $LicenseFileName ]; then&#13;
+        ExtensionVersion=$(awk -F\LicensableLEIDsLength '{print $2}' ./$LicenseFileName | cut -f2 -d'&gt;' | cut -f1 -d'&lt;')&#13;
+    fi&#13;
+fi&#13;
+&#13;
+if [ "$ExtensionVersion" == "" ]; then&#13;
+	ExtensionVersion="0"&#13;
+fi&#13;
+&#13;
+echo "&lt;result&gt;$ExtensionVersion&lt;/result&gt;"&#13;
+&#13;
+exit 0</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

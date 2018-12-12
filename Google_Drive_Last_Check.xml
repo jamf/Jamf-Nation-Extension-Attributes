@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Google Drive Last Check</displayName>
+<description>Checks for the last successful check between Google Drive Cloud and Local files.</description>
+<dataType>date</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+&#13;
+#  Checks for the last successful comparison between Google Drive Cloud and Local files.&#13;
+#  Works by checking the log file for the last mention of "retrieved" which occurs on a successful connection to Google to compare local and remote files.&#13;
+#  This attribute will check against the most recent user to log in via the login window.&#13;
+#  &#13;
+#&#13;
+#  Created by Ben Courtade on 2/26/15.&#13;
+#&#13;
+&#13;
+lastUser=$(defaults read /Library/Preferences/com.apple.loginwindow.plist lastUserName)&#13;
+&#13;
+fileCheckSuccessful=$(cat /Users/$lastUser/Library/"Application Support"/Google/Drive/user_default/sync_log.log | grep CloudWatcher | cut -d " " -f1,2 | cut -d "," -f1 |  tail -1)&#13;
+&#13;
+echo "&lt;result&gt;$fileCheckSuccessful&lt;/result&gt;"</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

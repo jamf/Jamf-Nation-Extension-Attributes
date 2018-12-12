@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Firefox version</displayName>
+<description>Report version of firefox</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+&#13;
+FFV=`/Applications/Firefox.app/Contents/MacOS/firefox --version | awk '{ print $3 '}`&#13;
+&#13;
+echo "&lt;result&gt;$FFV&lt;/result&gt;"</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

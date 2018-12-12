@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Casper Site</displayName>
+<description>This script reports the system's site association as an extended attribute so it can be used as search criteria.</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+&#13;
+apiURL="https://yourjss:8443/JSSResource/computers/udid/"&#13;
+apiUser="APIUser"&#13;
+apiPass="APIPassword"&#13;
+MacAdd=$( /usr/sbin/networksetup -getmacaddress en0 | /usr/bin/awk '{ print $3 }' | /usr/bin/sed 's/:/./g' )&#13;
+&#13;
+udid=$(/usr/sbin/system_profiler SPHardwareDataType | /usr/bin/awk '/Hardware UUID:/ { print $3 }')&#13;
+&#13;
+siteName=$(/usr/bin/curl -s -u ${apiUser}:${apiPass} "${apiURL}${udid}" | /usr/bin/xpath '/computer/general/site/name[1]/text()' 2&gt;/dev/null)&#13;
+&#13;
+if [[ $siteName ]]; then&#13;
+   echo "&lt;result&gt;${siteName}&lt;/result&gt;"&#13;
+else&#13;
+   echo "&lt;result&gt;Not Available&lt;/result&gt;"&#13;
+fi</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

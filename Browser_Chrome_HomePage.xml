@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Browser Chrome HomePage</displayName>
+<description>This will determine the HomePage Address set in the Firefox Browser for the last logged in user.    </description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+#####################################################################&#13;
+# Find the HomePage for Chrome Browser for the last logged in user&#13;
+# Cobbled together from other's hard work&#13;
+# By: Christopher T. Miller, Dated: 2014-11-14&#13;
+# For ITSD-ISS of JHU-APL&#13;
+#####################################################################&#13;
+&#13;
+# use the 'last' command to find the last real user.&#13;
+# It will skip over the following users: reboot, shutdown, root, wtmp, adobeinstall, and any user you specify.&#13;
+LastUser=`/usr/bin/last console | /usr/bin/awk '{print $1}' | /usr/bin/sed -e '/^$/d' -e '/^root$/d' -e '/^wtmp$/d' -e '/^adobeinstall$/d' | /usr/bin/awk 'NR&gt;1{exit};1'`&#13;
+&#13;
+&#13;
+# Scour the Last User's Chrome Preferences file for the HomePage Address&#13;
+HomePage=$(cat /Users/$LastUser/Library/Application\ Support/Google/Chrome/Default/Preferences | grep homepage | head -n 1 | awk '{print $2}')&#13;
+&#13;
+&#13;
+# Output the results and clip off extra characters&#13;
+echo "&lt;result&gt;$HomePage&lt;/result&gt;" | sed -e 's/[",;)]//g'	&#13;
+&#13;
+exit 0</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

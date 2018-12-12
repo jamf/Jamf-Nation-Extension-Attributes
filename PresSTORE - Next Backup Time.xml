@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute><displayName>PresSTORE - Next Backup Time</displayName><displayInCategory>Backup</displayInCategory><dataType>date</dataType><description>This attribute displays the next time PresSTORE will run a backup. This attribute is compatible with PresSTORE 4.3 and higher. This attribute applies to Mac only.  
+</description><scriptContentsMac>#!/bin/sh
+
+if [ -f /usr/local/aw/bin/nsdchat ]; then 
+    cd /usr/local/aw
+    workstation=`bin/nsdchat -c Server names`
+    nextbackup=`bin/nsdchat -c Server $workstation nextrun`
+
+    if [ "$nextbackup" != "" ]; then
+        nextbackupdate=`date -j -f %s $nextbackup +"%Y/%m/%d %H:%M:%S"`
+        echo "&lt;result&gt;$nextbackupdate&lt;/result&gt;"
+    fi
+
+else 
+    echo "&lt;result&gt;Not installed&lt;/result&gt;"
+fi
+</scriptContentsMac><scriptContentsWin>
+</scriptContentsWin></extensionAttribute>

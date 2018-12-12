@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Microsoft Lync Version</displayName>
+<description>Determine the Microsoft Lync version</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+#&#13;
+############################################################################&#13;
+#&#13;
+# Extension Attribute checks to display Microsoft Lync Version with Release number.&#13;
+#&#13;
+# Uses CFBundleShortVersionString because this is the "release version number of the bundle"&#13;
+# Ref: https://developer.apple.com/library/IOS/#documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html&#13;
+#&#13;
+############################################################################&#13;
+if [ -d /Applications/Microsoft\ Office\ 2011 ] ; then&#13;
+	RESULT=$( sudo defaults read /Applications/Microsoft\ Lync.app/Contents/Info.plist CFBundleShortVersionString )&#13;
+	echo "&lt;result&gt;$RESULT&lt;/result&gt;"&#13;
+else&#13;
+	echo "&lt;result&gt;Not Installed&lt;/result&gt;"&#13;
+fi</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

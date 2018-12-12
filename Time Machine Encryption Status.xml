@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Time Machine Encryption Status</displayName>
+<description>Show if TimeMachine disk is encrypted.</description>
+<dataType>string</dataType>
+<scriptContentsMac>
+#!/bin/bash  
+#Todd Houle 
+#Partners Healthcare
+#19June2014    
+#revised 24June2014
+#To determine if connected time machine disk is encrypted. 
+
+mountPath=`tmutil destinationinfo | grep "Mount Point" | awk -F ": " '{print $2}'`
+if [ "$mountPath" == "" ]; then
+    tmExists=`tmutil destinationinfo |grep "No destinations configured"| awk '{print $2 $3 $4}'`
+    if [ "$tmExists" == "Nodestinationsconfigured." ]; then
+        result="Backup Not Enabled"
+    else
+        result="Disk not available"
+    fi
+else
+    disk=`df -h|grep "$mountPath"|awk '{print $1}'`
+    result=`diskutil cs info $disk |grep "Conversion Status" | awk '{print $3}'`
+    if [ "$result" == ""  ] ; then
+        result="Not Encrypted"
+    fi
+fi
+
+echo "<result>$result</result>"
+
+</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

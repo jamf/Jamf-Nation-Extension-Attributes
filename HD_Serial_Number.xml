@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>HD Serial Number</displayName>
+<description>This attribute returns serial number of the Hard Drive</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+&#13;
+echo "&lt;result&gt;$(ioreg -rd1 -w0 -c AppleAHCIDiskDriver | grep Serial | sed 's/.*= //' | cut -d '"' -f 2)&lt;/result&gt;"&#13;
+</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

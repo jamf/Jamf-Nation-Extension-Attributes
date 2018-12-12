@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>BASH Version</displayName>
+<description>Find the version of BASH installed.  </description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+##################################################################&#13;
+# Extension Attribute checks version of BASH installed&#13;
+# Cobbled together from other's hard work by Christopher Miller&#13;
+# for ITSD-ISS of JHU-APL, Dated 2014-10-03&#13;
+##################################################################&#13;
+&#13;
+BASH_Version=$(/bin/bash --version | awk -F'[ |(]' '/version/{print $4}')&#13;
+&#13;
+echo "&lt;result&gt;$BASH_Version&lt;/result&gt;"&#13;
+&#13;
+exit 0</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

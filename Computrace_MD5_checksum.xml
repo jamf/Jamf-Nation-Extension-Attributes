@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Computrace MD5 checksum</displayName>
+<description>This attribute displays the MD5 checksum of the /usr/sbin/rpc.net.</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+echo "&lt;result&gt;`md5 -q /usr/sbin/rpc.net`&lt;/result&gt;"&#13;
+</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

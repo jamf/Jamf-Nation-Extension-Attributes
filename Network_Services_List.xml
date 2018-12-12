@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Network Services List</displayName>
+<description>This attribute lists all network services present on a machine.  This attribute applies to both Mac and Windows.</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+ref=$(/usr/bin/sw_vers -productVersion | awk '{print substr($1,4,2)}')&#13;
+case $ref in&#13;
+	[0-4] ) if [ -f /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Support/networksetup ]&#13;
+			then&#13;
+				echo "&lt;result&gt;`/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Support/networksetup -listallnetworkservices 2&gt;&amp;1`&lt;/result&gt;"&#13;
+			else&#13;
+				echo "&lt;result&gt;The networksetup binary is not present on this machine.&lt;/result&gt;"&#13;
+			fi&#13;
+			;;&#13;
+		* ) echo "&lt;result&gt;`/usr/sbin/networksetup -listallnetworkservices| grep -i -v asterisk`&lt;/result&gt;"&#13;
+			;;&#13;
+esac</scriptContentsMac>
+<scriptContentsWindows>On Error Resume Next&#13;
+&#13;
+Dim objNetworkAdapters&#13;
+Dim strNetworkAdapters&#13;
+&#13;
+Set objNetworkAdapters = GetObject("winmgmts:").Instancesof("Win32_NetworkAdapter")&#13;
+i=0&#13;
+For each NetworkAdapter in objNetworkAdapters&#13;
+    If i &lt;&gt; 0 then&#13;
+    strNetworkAdapters = "&lt;br&gt;" &amp; strNetworkAdapters&#13;
+    End If&#13;
+strNetworkAdapters = NetworkAdapter.Name &amp; strNetworkAdapters&#13;
+    i = i + 1&#13;
+Next&#13;
+&#13;
+WScript.Echo "&lt;result&gt;" &amp; strNetworkAdapters &amp; "&lt;/result&gt;"</scriptContentsWindows>
+</extensionAttribute>

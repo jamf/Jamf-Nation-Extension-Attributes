@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Encase Version</displayName>
+<description>Displays version of enosxintel binary</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+&#13;
+if [ -e /usr/sbin/enosxintel ]&#13;
+	then encaseVersion=$(/usr/sbin/enosxintel -help 2&gt; /dev/null | grep enosxintel | head -1 | awk '{print $2}')&#13;
+	else encaseVersion=NA&#13;
+fi&#13;
+&#13;
+echo "&lt;result&gt;$encaseVersion&lt;/result&gt;"</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

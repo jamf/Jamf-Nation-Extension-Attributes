@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute>
+<displayName>Pulse Secure Version</displayName>
+<description>Extension Attribute checks for the release version of Pulse Secure Application installed {formerly known as Junos Pulse}</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+############################################################################&#13;
+# Extension Attribute checks SSL-VPN Version number.&#13;
+############################################################################&#13;
+AppFound="false"&#13;
+&#13;
+# Look for the older name App&#13;
+if [ -e "/Applications/Junos Pulse.app" ]; then&#13;
+SSLVPN_Version=$(cat "/Applications/Junos Pulse.app/Contents/Resources/JunosPulseCoreVersion.ini" | grep DisplayVersion | cut -c 16-); AppFound="true"&#13;
+&#13;
+# Look for the newer name App&#13;
+elif [ -e "/Applications/Pulse Secure.app" ]; then&#13;
+SSLVPN_Version=$(cat "/Applications/Pulse Secure.app/Contents/Resources/PulseSecureCoreVersion.ini" | grep DisplayVersion | cut -c 16-); AppFound="true"&#13;
+&#13;
+# If neither found, then say so&#13;
+elif [ AppFound == "false" ]; then&#13;
+SSLVPN_Version="not found"&#13;
+&#13;
+fi&#13;
+# Report result&#13;
+echo "&lt;result&gt;$SSLVPN_Version&lt;/result&gt;"&#13;
+&#13;
+exit 0</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

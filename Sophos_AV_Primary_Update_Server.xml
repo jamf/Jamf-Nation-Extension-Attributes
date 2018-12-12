@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Sophos AV Primary Update Server</displayName>
+<description/>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+&#13;
+if [ -f /Library/Preferences/com.sophos.sau.plist ] ;then&#13;
+URL=`defaults read /Library/Preferences/com.sophos.sau.plist | grep PrimaryServerURL | awk '{print $3}' | cut -d ";" -f1`&#13;
+echo "&lt;result&gt;"${URL}"&lt;/result&gt;"&#13;
+fi&#13;
+exit 0</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

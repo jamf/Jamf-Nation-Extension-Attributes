@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE extensionAttribute PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<extensionAttribute>
+  <displayName>ActivInspire Version </displayName>
+  <displayInCategory/>
+  <dataType>string</dataType>
+  <description>I don't take the credit for this script, it was swood@integer.com but I just edited so I could get the version of ActivInspire on my clients&#13;
+&#13;
+</description>
+  <scriptContentsMac>#!/bin/bash
+
+# get the current version of activeinspire
+
+aiverion=`/bin/cat /Applications/Promethean/Activsoftware\ Inspire/Inspire.app/Contents/Info.plist | grep -A 1 -m 1 CFBundleGetInfoString | grep string | sed 's/[/]//' | sed 's/&lt;string&gt;//g'`
+
+echo "&lt;result&gt;$aiverion&lt;/result&gt;"
+
+exit 0</scriptContentsMac>
+</extensionAttribute>

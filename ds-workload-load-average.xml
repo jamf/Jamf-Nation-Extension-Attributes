@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute><dataType>String</dataType><displayName>DS Workload: Load Average</displayName><description>Load average snapshot.</description><displayInCategory>System Information</displayInCategory><scriptContentsMac>#!/bin/sh
+echo &quot;&lt;result&gt;$(/usr/bin/uptime | /usr/bin/awk '{print $NF}')&lt;/result&gt;&quot;</scriptContentsMac></extensionAttribute>

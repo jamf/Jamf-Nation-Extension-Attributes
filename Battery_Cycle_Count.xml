@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute>
+<displayName>Battery Cycle Count</displayName>
+<description>This attribute returns the number of charge cycles logged on the current battery.</description>
+<dataType>number</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+&#13;
+echo "&lt;result&gt;$(system_profiler SPPowerDataType | awk '/Cycle Count/{print $NF}')&lt;/result&gt;"&#13;
+</scriptContentsMac>
+</extensionAttribute>

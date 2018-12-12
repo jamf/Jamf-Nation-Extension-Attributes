@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Shockwave version</displayName>
+<description>Tweaked version of https://github.com/rtrouton/rtrouton_scripts/tree/master/rtrouton_scripts/Casper_Extension_Attributes/java_browser_plug-in_version</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+&#13;
+# Christoph von Gabler-Sahm (christoph.gabler-sahm@computacenter.com)&#13;
+# Version 1.0&#13;
+#&#13;
+# Modified by Sam Novak (snovak@uwsp.edu) for Shockwave&#13;
+&#13;
+# checks installed version of Shockwave Plugin&#13;
+&#13;
+PLUGINPATH="/Library/Internet Plug-Ins/DirectorShockwave.plugin"&#13;
+&#13;
+# Plugin version&#13;
+S_VERSION=$( /usr/bin/defaults read "${PLUGINPATH}/Contents/Info" CFBundleShortVersionString 2&gt;/dev/null )&#13;
+&#13;
+if [[ -e "${PLUGINPATH}" ]]; then&#13;
+    if [[ "${S_VERSION}" != "" ]]; then&#13;
+        EA_RESULT="${S_VERSION}"&#13;
+    fi&#13;
+else&#13;
+    EA_RESULT="Not installed"&#13;
+fi&#13;
+&#13;
+echo "&lt;result&gt;${EA_RESULT}&lt;/result&gt;"</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

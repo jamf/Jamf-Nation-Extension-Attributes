@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute>
+<displayName>Nvidia CUDA Driver</displayName>
+<description>Returns the installed version of Nvidia CUDA Driver</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/bash
+
+ExtensionVersion=""
+if [ -f /Library/Frameworks/CUDA.framework/Versions/Current/Resources/Info.plist ]
+	then
+	ExtensionVersion=$(defaults read /Library/Frameworks/CUDA.framework/Versions/Current/Resources/Info.plist CFBundleShortVersionString)
+fi
+
+if [ "$ExtensionVersion" == "" ]
+	then
+		ExtensionVersion="Not Installed"
+fi
+
+echo "&lt;result&gt;$ExtensionVersion&lt;/result&gt;"
+
+exit 0</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Get SOLO Version</displayName>
+<description>This EA gets the currently installed version of the Don Johnston SOLO Suite if installed. If not installed, it reports "Not installed."</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+&#13;
+#&#13;
+# by rick c @ aim academy 2014-07-14&#13;
+# checks for Don Johnston SOLO.app Version&#13;
+#&#13;
+&#13;
+if [ -f "/Applications/DonJohnston/SOLO/Applications/SOLO.app/Contents/Info.plist" ] ; then&#13;
+	VERSION=$( defaults read "/Applications/DonJohnston/SOLO/Applications/SOLO.app/Contents/Info.plist" CFBundleVersion )&#13;
+else&#13;
+	VERSION="Not installed."&#13;
+fi&#13;
+&#13;
+echo "&lt;result&gt;$VERSION&lt;/result&gt;"</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

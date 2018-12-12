@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute>
+<displayName>Microsoft AutoUpdate</displayName>
+<description>Returns the installed version of Microsoft Sharepoint Browser</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+&#13;
+ExtensionVersion=""&#13;
+if [ -f /Library/Application\ Support/Microsoft/MAU2.0/Microsoft\ AutoUpdate.app/Contents/Info.plist ]; then&#13;
+	ExtensionVersion=$(defaults read /Library/Application\ Support/Microsoft/MAU2.0/Microsoft\ AutoUpdate.app/Contents/Info.plist CFBundleShortVersionString)&#13;
+fi&#13;
+&#13;
+if [ "$ExtensionVersion" == "" ]; then&#13;
+	ExtensionVersion="Not Installed"&#13;
+fi&#13;
+&#13;
+echo "&lt;result&gt;$ExtensionVersion&lt;/result&gt;"&#13;
+&#13;
+exit 0</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

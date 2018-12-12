@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>GPU</displayName>
+<description>This attribute displays the GPU of the computer. It's particularly useful, if you want to scope computers with nVidia video cards, so you can make new drivers or CUDA available for your users.</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+# Meza Hsu&#13;
+# 2016.02.09&#13;
+# Find out which GPU the computer has.&#13;
+VideoCard=$(system_profiler SPDisplaysDataType | grep 'Chipset Model:' | cut -f2- -d':')&#13;
+echo "&lt;result&gt;$VideoCard&lt;/result&gt;"</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Management User</displayName>
+<description/>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+&#13;
+####  Hard-coded variables  ###########################################################################################&#13;
+&#13;
+&#13;
+# Username that has API read privileges for Computers&#13;
+apiUsername=""   &#13;
+&#13;
+# Password for API user&#13;
+apiPassword="" &#13;
+&#13;
+# JSS base url - Example: "https://yourJSSurl:8443"&#13;
+jssBase="https://jss_url:8443"       &#13;
+&#13;
+&#13;
+####  Functions  ######################################################################################################&#13;
+&#13;
+function getComputerUUID() {&#13;
+&#13;
+  computerUUID="$(/usr/sbin/system_profiler SPHardwareDataType | /usr/bin/grep 'Hardware UUID' | /usr/bin/awk -F ' ' {'print $3'})"&#13;
+}&#13;
+&#13;
+function getComputerManagementUserViaUUID() {&#13;
+&#13;
+  computerManagementUser=`/usr/bin/curl -H "Accept: application/xml" -H "Content-type: application/xml" -skfu "${apiUsername}:${apiPassword}" "${jssBase}/JSSResource/computers/udid/${computerUUID}/subset/general" | xmllint --format - 2&gt;/dev/null | awk -F'&gt;|&lt;' '/management_username/{print $3}'`&#13;
+}&#13;
+&#13;
+&#13;
+####  Main  ###########################################################################################################&#13;
+&#13;
+getComputerUUID&#13;
+getComputerManagementUserViaUUID&#13;
+&#13;
+if [ ! -z "$computerManagementUser" ]; then&#13;
+    echo "&lt;result&gt;$computerManagementUser&lt;/result&gt;"&#13;
+else&#13;
+    echo "&lt;result&gt;N/A&lt;/result&gt;"&#13;
+fi&#13;
+&#13;
+</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

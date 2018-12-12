@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute>
+<displayName>Bradford Agent Version</displayName>
+<description>This will display the version of the Bradford Agent</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+#################################&#13;
+# Original Code By Chris Tangora&#13;
+# Updated by Christopher Miller&#13;
+# of ITSD-ISS for JHU-APL&#13;
+# Dated: 20151001&#13;
+#################################&#13;
+&#13;
+# Look for the newer app version info&#13;
+if [[ -e "/Library/Application Support/Bradford Networks/Persistent Agent/CSA.app/Contents/Info.plist" ]]; &#13;
+    then&#13;
+        BPAv=$(/usr/bin/defaults read "/Library/Application Support/Bradford Networks/Persistent Agent/CSA.app/Contents/Info.plist" | grep CFBundleGetInfoString | awk {'print $3'} | sed -e 's/[";]//g')&#13;
+&#13;
+# Look for the older app version info    &#13;
+elif [[ -e /Library/Application\ Support/Bradford\ Networks/Persistent\ Agent/CSA.app/Contents/Resources/bncsaui.xrs ]]; &#13;
+    then&#13;
+        BPAv=$( zipgrep Version /Library/Application\ Support/Bradford\ Networks/Persistent\ Agent/CSA.app/Contents/Resources/bncsaui.xrs | sed -e 's|.*\Version\:\ ||' -e 's|\&lt;br.*||' )&#13;
+&#13;
+# If nothing found, 'taint installed     &#13;
+else&#13;
+    BPAv="Not Installed"&#13;
+        &#13;
+fi&#13;
+&#13;
+# Spit out the result&#13;
+echo "&lt;result&gt;$BPAv&lt;/result&gt;"&#13;
+&#13;
+exit 0</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

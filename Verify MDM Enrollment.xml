@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute><displayName>Verify MDM Enrollment</displayName><displayInCategory>JAMF Software</displayInCategory><dataType>string</dataType><description>This attribute verifies that the client has enrolled to the JSS.  Results returned are "Enabled" or "Not Enabled" based on whether the client has an MDM profile supplied by the JSS. 
+</description><scriptContentsMac>#!/bin/sh
+mdmEnrollmentProfileID="00000000-0000-0000-A000-4A414D460003"
+enrolled=`/usr/bin/profiles -C | /usr/bin/grep "$mdmEnrollmentProfileID"`
+
+if [ "$enrolled" != "" ]; then
+	echo "&lt;result&gt;Enrolled&lt;/result&gt;"
+else
+	echo "&lt;result&gt;Not Enrolled&lt;/result&gt;"
+fi
+</scriptContentsMac><scriptContentsWin>
+</scriptContentsWin></extensionAttribute>

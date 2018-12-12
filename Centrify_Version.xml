@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Centrify Version</displayName>
+<description/>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+&#13;
+mode=`adinfo --version | grep "CentrifyDC" | awk '{print $3}'`&#13;
+&#13;
+if [ "$mode" != "" ]; then&#13;
+	echo "&lt;result&gt;Centrify v.${mode//)} Installed&lt;/result&gt;"&#13;
+else&#13;
+	echo "&lt;result&gt;Centrify Not Installed&lt;/result&gt;"&#13;
+fi&#13;
+&#13;
+# modified by Amanda De Feo 08-16-2017 - jose below&#13;
+&#13;
+#if [ "$mode" == "5.4.1-455)" ]; then&#13;
+#    echo "&lt;result&gt;Centrify v5.3.3 Installed&lt;/result&gt;"&#13;
+#elif [ "$mode" == "5.4.0-289)" ]; then&#13;
+#    echo "&lt;result&gt;Centrify v5.3.3 Installed&lt;/result&gt;"&#13;
+#elif [ "$mode" == "5.3.3-602)" ]; then&#13;
+#    echo "&lt;result&gt;Centrify v5.3.3 Installed&lt;/result&gt;"&#13;
+#elif [ "$mode" == "5.3.0-213)" ]; then&#13;
+#echo "&lt;result&gt;Old Centrify Version v5.3.0x Installed&lt;/result&gt;"&#13;
+#elif [ "$mode" == "5.2.4-465)" ]; then&#13;
+#echo "&lt;result&gt;Old Centrify Version v5.2.4x Installed&lt;/result&gt;"&#13;
+#else&#13;
+#    echo "&lt;result&gt;NA&lt;/result&gt;"&#13;
+#fi</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

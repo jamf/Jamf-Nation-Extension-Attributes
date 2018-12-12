@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE extensionAttribute PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<extensionAttribute>
+  <displayName>List iLok Serial</displayName>
+  <displayInCategory/>
+  <dataType>string</dataType>
+  <description>EA to list attached iLok USB device Serial</description>
+  <scriptContentsMac>#!/bin/sh
+## Script to detect and enumerate attached iLok Serial
+
+SERIAL=`system_profiler SPUSBDataType | grep -B 5 -i ': iLok' | grep 'Serial' | cut -f 2 -d ":" | sed -e "s/ //"`
+#SERIAL=`system_profiler SPUSBDataType | grep -B 5 -i ': iLok' | grep 'Serial'`
+
+echo '&lt;result&gt;'$SERIAL'&lt;/result&gt;'
+</scriptContentsMac>
+</extensionAttribute>

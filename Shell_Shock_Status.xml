@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Shell Shock Status</displayName>
+<description>Look for the "Shell Shock" vulnerability.  </description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+##################################################################&#13;
+# Extension Attribute checks status of Shell Shock vulnerability.&#13;
+# Cobbled together from other's hard work by Christopher Miller&#13;
+# for ITSD-ISS of JHU-APL, Dated 2014-10-03&#13;
+##################################################################&#13;
+&#13;
+ShellShockStatus=`env x='() { :;}; echo vulnerable' bash -c 'echo' | grep vulnerable`&#13;
+if [ "$ShellShockStatus" != "vulnerable" ]&#13;
+			then&#13;
+			    ShellShockStatus="Patched"&#13;
+fi	&#13;
+&#13;
+echo "&lt;result&gt;$ShellShockStatus&lt;/result&gt;"		&#13;
+exit 0</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

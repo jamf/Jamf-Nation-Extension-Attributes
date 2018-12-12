@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Managed By - EA</displayName>
+<description/>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+################################################################################################################################&#13;
+## This Extension Attribute will return the "Managed by" account name that the JSS is using to manage the computer"           ##&#13;
+## You can then create Smart Groups or Advanced Search based on this Attribute.                                               ##&#13;
+##                                                                                                                            ##&#13;
+## You need to fill in your UserName, Password to access your JSS.  You also need to fill in the JSS address and port number. ##&#13;
+################################################################################################################################&#13;
+&#13;
+### Update these variables ###&#13;
+user="UserName"&#13;
+pass="Password"&#13;
+jssaddress="Server Address"&#13;
+serverPort="8443"&#13;
+computerName=$(hostname -f) &#13;
+&#13;
+&#13;
+&#13;
+## Do not modify below this line ###&#13;
+response=$(curl https://$jssaddress/JSSResource:$serverPort/computers/name/$computerName/subset/General --user "$user:$pass")&#13;
+ManagedBy=$(echo $response | /usr/bin/awk -F'&lt;management_username&gt;|&lt;/management_username&gt;' '{print $2}')&#13;
+&#13;
+echo "&lt;result&gt;$ManagedBy&lt;/result&gt;"</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

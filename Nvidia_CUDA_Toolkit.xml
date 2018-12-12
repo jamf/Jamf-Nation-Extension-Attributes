@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute>
+<displayName>Nvidia CUDA Toolkit</displayName>
+<description>Returns the installed version of the Nvidia CUDA toolkit.</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+&#13;
+VERSION=""&#13;
+# Find the gdb sources&#13;
+# use a cut to the file names in a '7.0.29.src.tar.gz' format&#13;
+# sort them in reverse to put the newest one first&#13;
+# Cut out the version number from the first three characters between '.'s&#13;
+# and return the first result (ex. 7.0.29)'&#13;
+VERSION=$(find /Developer/NVIDIA/ -name "cuda-gdb*.src.tar.gz" | cut -d '-' -f4 | sort -r | cut -d '.' -f1,2,3 | head -n 1)&#13;
+&#13;
+if [ "$VERSION" == "" ]; then&#13;
+	VERSION="Not Installed"&#13;
+fi&#13;
+&#13;
+&#13;
+echo "&lt;result&gt;$VERSION&lt;/result&gt;"&#13;
+&#13;
+exit 0</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

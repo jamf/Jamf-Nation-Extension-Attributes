@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute><dataType>String</dataType><displayName>DS Workload: VM Paging</displayName><description>Paging information since last reboot.</description><displayInCategory>System Information</displayInCategory><scriptContentsMac>#!/bin/sh
+pageIns=`/usr/bin/vm_stat | /usr/bin/grep -i pageins | /usr/bin/awk '{print $NF}' | /usr/bin/sed 's/\.//'`
+pageIns=&quot;&lt;page_ins&gt;$pageIns&lt;/page_ins&gt;&quot;
+pageOuts=`/usr/bin/vm_stat | /usr/bin/grep -i pageouts | /usr/bin/awk '{print $NF}' | /usr/bin/sed 's/\.//'`
+pageOuts=&quot;&lt;page_outs&gt;$pageOuts&lt;/page_outs&gt;&quot;
+echo &quot;&lt;result&gt;&lt;stats&gt;$pageIns$pageOuts&lt;/stats&gt;&lt;/result&gt;&quot;</scriptContentsMac></extensionAttribute>

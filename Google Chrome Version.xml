@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Google Chrome Version</displayName>
+<description/>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+#&#13;
+############################################################################&#13;
+#&#13;
+# Extension Attribute checks to display Google Chrome's Version with Release number.&#13;
+#&#13;
+# Uses CFBundleShortVersionString because this is the "release version number of the bundle"&#13;
+# Ref: https://developer.apple.com/library/IOS/#documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html&#13;
+#&#13;
+#&#13;
+############################################################################&#13;
+#&#13;
+if [ -d /Applications/Google\ Chrome.app ] ; then&#13;
+	RESULT=$( sudo defaults read /Applications/Google\ Chrome.app/Contents/Info CFBundleShortVersionString )&#13;
+	echo "&lt;result&gt;$RESULT&lt;/result&gt;"&#13;
+else&#13;
+	echo "&lt;result&gt;Not Installed&lt;/result&gt;"&#13;
+fi&#13;
+&#13;
+</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

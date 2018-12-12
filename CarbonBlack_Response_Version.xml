@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute>
+<displayName>CarbonBlack Response Version</displayName>
+<description/>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+versionBinary="/Applications/CarbonBlack/CbOsxSensorService";&#13;
+if [[ -f "$versionBinary" ]]; then&#13;
+    version=$($versionBinary -v | tr -d ' ')&#13;
+    if [[ ! -z "$version" ]]; then&#13;
+        result="$version"&#13;
+    else&#13;
+        result="Invalid Version"&#13;
+    fi&#13;
+else&#13;
+    result="Not Installed"&#13;
+fi&#13;
+echo "&lt;result&gt;${result}&lt;/result&gt;";</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

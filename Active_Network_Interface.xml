@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Active Network Interface</displayName>
+<description/>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+ref=$(/usr/bin/sw_vers -productVersion | awk '{print substr($1,4,2)}')&#13;
+case $ref in&#13;
+[0-4] ) ntwkset="/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Support/networksetup -listnetworkserviceorder"&#13;
+        ;;&#13;
+     *) ntwkset="networksetup -listnetworkserviceorder"&#13;
+        ;;&#13;
+esac&#13;
+&#13;
+ifconfigoutput='&#13;
+BEGIN            { print_it = 0 }&#13;
+/status: active/ { print_it = 1 }&#13;
+/^($|[^\t])/     { if(print_it) print buffer; buffer = $0; print_it = 0 }&#13;
+/^\t/            { buffer = buffer "\n" $0 }&#13;
+END              { if(print_it) print buffer }&#13;
+'&#13;
+&#13;
+ntwkint=($(ifconfig -u | awk "$ifconfigoutput" | awk '/flags/{print substr($1,1,3)}'))&#13;
+/bin/echo -n $"&lt;result&gt;"&#13;
+for x in "${ntwkint[@]}"&#13;
+do&#13;
+	echo `$ntwkset | grep "$x" | sed -e 's/[)(]//g;s/,//g;s/.*Port: //g;s/Device:\ //g'`&#13;
+done&#13;
+echo "&lt;/result&gt;"</scriptContentsMac>
+<scriptContentsWindows>On Error Resume Next&#13;
+strComputer = "." &#13;
+Set objWMIService = GetObject("winmgmts:\\" &amp; strComputer &amp; "\root\CIMV2") &#13;
+Set colItems = objWMIService.ExecQuery("SELECT * FROM Win32_NetworkAdapterConfiguration",,48) &#13;
+intmetric = 999    &#13;
+For Each objItem in colItems &#13;
+    If objitem.ipenabled = True then&#13;
+    If objItem.IPConnectionMetric &lt; intmetric then&#13;
+    stractiveconnection = objItem.description&#13;
+    intmetric = objItem.IPConnectionMetric&#13;
+    End If&#13;
+    End If &#13;
+Next&#13;
+WScript.Echo "&lt;result&gt;" &amp; stractiveconnection &amp; "&lt;/result&gt;"</scriptContentsWindows>
+</extensionAttribute>

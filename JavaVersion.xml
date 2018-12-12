@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>JavaVersion</displayName>
+<description>Detect version of Java</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+&#13;
+#&#13;
+# script by emily k @volusion 2014-06-10&#13;
+# to detect version of java installed on OS X&#13;
+# &#13;
+&#13;
+if [ -f "/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Enabled.plist" ] ; then&#13;
+	VERSION=$( defaults read "/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Enabled.plist" CFBundleVersion )&#13;
+else&#13;
+	VERSION="Not installed."&#13;
+fi&#13;
+&#13;
+echo "&lt;result&gt;$VERSION&lt;/result&gt;"</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

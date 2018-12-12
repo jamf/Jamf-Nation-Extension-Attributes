@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE extensionAttribute PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<extensionAttribute>
+  <displayName>Xprotect Status</displayName>
+  <displayInCategory/>
+  <dataType>string</dataType>
+  <description>EA to pull the modification date from Xprotect so that admins can see what version of Xprotect is in use on client machines. &#13;
+&#13;
+n.b. As Apple silently pushes Xprotect updates to clients if the service is enabled on the machine, the data this EA collects is a snapshot of Xprotect status at time of inventory and might not be the current status on a client machine.</description>
+  <scriptContentsMac>#!/bin/sh
+
+#Pulls Sophos version string from Sophos Anti-Virus.app
+
+XPROTECT=`defaults read /System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/XProtect.meta LastModification`
+
+echo "&lt;result&gt;$XPROTECT&lt;/result&gt;"
+
+exit 0</scriptContentsMac>
+</extensionAttribute>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE extensionAttribute PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<extensionAttribute>
+  <displayName>Kace KBox 1000 6.x and later</displayName>
+  <displayInCategory/>
+  <dataType>string</dataType>
+  <description>Updated Casper Extension Attribute for Kace KBox 1000. Previous versions of the KBox 1000 EA do not pull information correctly for both 5.x and 6.x; this updated version handles both and returns the correct version of the Kace agent.</description>
+  <scriptContentsMac>#!/bin/sh
+
+# Check to see if the KBox agent is installed.
+# If the agent is installed, report the agent
+# version.
+
+if [ -f "/Library/Application Support/Dell/KACE/data/version" ]; then
+   result=`cat "/Library/Application Support/Dell/KACE/data/version" | awk 'NR == 1'`
+   echo "&lt;result&gt;$result&lt;/result&gt;"
+else
+   echo "&lt;result&gt;Not installed&lt;/result&gt;"
+fi</scriptContentsMac>
+</extensionAttribute>

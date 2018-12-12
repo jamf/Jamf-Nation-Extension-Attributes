@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>MDM Profile Verification State</displayName>
+<description>This attribute verifies that the Verification State of the MDM Profile installed on a client from the JSS. Results returned are "Verified", "Not Verified" or "Undecided" If an MDM Profile supplied by the JSS is not installed on the client, or if this script cannot find a Verification State attribute, this attribute will return a result of "Undecided".</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+####################################################################################################&#13;
+#&#13;
+# Copyright (c) 2015, JAMF Software, LLC.  All rights reserved.&#13;
+#&#13;
+#       Redistribution and use in source and binary forms, with or without&#13;
+#       modification, are permitted provided that the following conditions are met:&#13;
+#               * Redistributions of source code must retain the above copyright&#13;
+#                 notice, this list of conditions and the following disclaimer.&#13;
+#               * Redistributions in binary form must reproduce the above copyright&#13;
+#                 notice, this list of conditions and the following disclaimer in the&#13;
+#                 documentation and/or other materials provided with the distribution.&#13;
+#               * Neither the name of the JAMF Software, LLC nor the&#13;
+#                 names of its contributors may be used to endorse or promote products&#13;
+#                 derived from this software without specific prior written permission.&#13;
+#&#13;
+#       THIS SOFTWARE IS PROVIDED BY JAMF SOFTWARE, LLC "AS IS" AND ANY&#13;
+#       EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED&#13;
+#       WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE&#13;
+#       DISCLAIMED. IN NO EVENT SHALL JAMF SOFTWARE, LLC BE LIABLE FOR ANY&#13;
+#       DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES&#13;
+#       (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;&#13;
+#       LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND&#13;
+#       ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT&#13;
+#       (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS&#13;
+#       SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.&#13;
+#&#13;
+####################################################################################################&#13;
+# Gather MDM Profile Verification State v1 - gmaki 1/4/16&#13;
+# v2 updated awk to print a "Not Verified" result appropriately - bschmidt 1/5/16&#13;
+# Note, If an MDM Profile is not installed on the client, or if this script cannot find a verification state attribute within 3 lines after the profile identifier using the system_profiler command, this EA will return an "Undecided" result to the JSS.&#13;
+profileVerifyStatus=`system_profiler SPConfigurationProfileDataType | grep -A3 "UUID: 00000000-0000-0000-A000-4A414D460003" | grep "Verification State: " | awk -F ': ' '{ print $2 }'`&#13;
+if [ "$profileVerifyStatus" != "" ]; then&#13;
+echo "&lt;result&gt;$profileVerifyStatus&lt;/result&gt;"&#13;
+else&#13;
+echo "&lt;result&gt;Undecided&lt;/result&gt;"&#13;
+fi&#13;
+exit 0</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

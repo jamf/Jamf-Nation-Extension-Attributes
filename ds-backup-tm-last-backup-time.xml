@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute><dataType>String</dataType><displayName>DS Backup: TM Last Backup Time</displayName><description>Latest Time Machine backup timestamp.</description><displayInCategory>Backup</displayInCategory><scriptContentsMac>#!/usr/bin/env python
+
+from datetime import timedelta, tzinfo
+from shlex import split
+from subprocess import Popen, PIPE
+import os
+import plistlib
+
+ZERO = timedelta(0)
+NOT_ENABLED = u'Not enabled.'
+TM_PREFS_PATH = '/Library/Preferences/com.apple.TimeMachine.plist'
+TM_RESULTS_PATH = '/private/var/db/.TimeMachine.Results.plist'
+
+
+class UTC(tzinfo):
+    &quot;&quot;&quot;UTC&quot;&quot;&quot;
+    def utcoffset(self, dt):
+        return ZERO
+
+    def tzname(self, dt):
+        return &quot;UTC&quot;
+
+    def dst(self, dt):
+        return ZERO
+
+
+def render_timestamp(dt):
+    if not dt.tzinfo:
+        dt = dt.replace(tzinfo=UTC())
+    return dt.strftime('%Y-%m-%d %H:%M:%S %z')
+
+
+def popen(command):
+    return Popen(split(command), stdout=PIPE).stdout.read()
+
+
+def parse_plist(plist_path):
+    cmd = '/usr/bin/plutil -convert xml1 -o - &quot;%s&quot;' % plist_path
+    xml_plist = popen(cmd)
+    return plistlib.readPlistFromString(xml_plist)
+
+
+def get_prefs_version(prefs):
+    return prefs.get('PreferencesVersion', -1)
+
+
+def pre_version2_result(results):
+    result = NOT_ENABLED
+    if os.path.isfile(results):
+        tm_status = parse_plist(results)
+        if tm_status.get('BACKUP_COMPLETED_DATE'):
+            result = render_timestamp(tm_status['BACKUP_COMPLETED_DATE'])
+    return result
+
+
+def get_tm_result(prefs, tm_pref_handler):
+    result = NOT_ENABLED
+    if tm_pref_handler(prefs):
+        result = render_timestamp(max(tm_pref_handler(prefs)))
+    return result
+
+
+def v2_parser(tm_status):
+    snapshot_timestamps = []
+    for d in tm_status['Destinations']:
+        completed = d.get('BACKUP_COMPLETED_DATE')
+        if completed:
+            snapshot_timestamps.append(completed)
+    return snapshot_timestamps
+
+
+def v3_parser(tm_status):
+    snapshot_timestamps = []
+    for d in tm_status['Destinations']:
+        snapshot_timestamps.extend(d.get('SnapshotDates', []))
+    return snapshot_timestamps
+
+
+def get_tm_status(prefs, results=TM_RESULTS_PATH):
+    # If the preferences plist doesn't even exist
+    if not os.path.isfile(prefs):
+        return u&quot;&lt;result&gt;%s&lt;/result&gt;&quot; % NOT_ENABLED
+
+    prefs = parse_plist(prefs)
+    version = int(get_prefs_version(prefs))
+
+    # If AutoBackup doesn't exist or isn't enabled
+    if not int(prefs.get('AutoBackup', 0)):
+        return u&quot;&lt;result&gt;%s&lt;/result&gt;&quot; % NOT_ENABLED
+
+    if version == 3:
+        last_backup = get_tm_result(prefs, v3_parser)
+    elif version == 2:
+        last_backup = get_tm_result(prefs, v2_parser)
+    else:
+        last_backup = pre_version2_result(results)
+
+    return u&quot;&lt;result&gt;%s&lt;/result&gt;&quot; % last_backup
+
+
+if __name__ == '__main__':
+    print get_tm_status(TM_PREFS_PATH)</scriptContentsMac></extensionAttribute>

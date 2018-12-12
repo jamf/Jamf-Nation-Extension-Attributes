@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE extensionAttribute PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<extensionAttribute>
+  <displayName>Detect Bootcamp Partition</displayName>
+  <displayInCategory/>
+  <dataType>string</dataType>
+  <description>This attribute uses the diskutil list command to check for disk partitions reporting as "Microsoft Basic Data". These partitions are used by Apple's Bootcamp.&#13;
+&#13;
+If Microsoft Basic Data partition is reported by diskutil, script reports "Yes". If no Microsoft Basic Data partition is reported by diskutil, script reports "No".</description>
+  <scriptContentsMac>#!/bin/sh
+
+#
+# Using diskutil list to check for 
+# disk partitions reporting as 
+# "Microsoft Basic Data"
+#
+
+BOOTCAMP_DETECT=$( /usr/sbin/diskutil list | grep -c "Microsoft Basic Data" )
+
+#
+# If Microsoft Basic Data partition is
+# reported by diskutil, script reports
+# "Yes". If no Microsoft Basic Data partition
+# is reported by diskutil, script reports "No".
+# 
+
+if [[ "${BOOTCAMP_DETECT}" == "1" ]]; then
+      result=Yes
+   else
+      result=No
+fi
+echo "&lt;result&gt;$result&lt;/result&gt;"
+
+exit 0
+</scriptContentsMac>
+</extensionAttribute>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute>
+<displayName>FortiClient version</displayName>
+<description>Returns the FortiClient version</description>
+<dataType>number</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+&#13;
+if [ -e /Library/Application\ Support/Fortinet/FortiClient/conf/fctinfo ]&#13;
+	then forticlientVersion=$(/bin/cat /Library/Application\ Support/Fortinet/FortiClient/conf/fctinfo | /usr/bin/cut -d"=" -f2)&#13;
+	else forticlientVersion=0&#13;
+fi&#13;
+&#13;
+echo "&lt;result&gt;$forticlientVersion&lt;/result&gt;"</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

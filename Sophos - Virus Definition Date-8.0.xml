@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Sophos - Virus Definition Date</displayName>
+<description>This attribute returns the Virus Definitions Date for Sophos.  This attribute template applies to Sophos (v 8.0.16).</description>
+<dataType>date</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+#This script has been verified to work on Sophos (v 8.0.16).&#13;
+&#13;
+#Check to see if Sophos is installed&#13;
+if [ -f "/usr/bin/sweep" ]; then&#13;
+result=`/bin/date -j -f "%b %d %Y" "$(/usr/bin/sweep -v | grep "Data file date" |tail -1| awk '{print $6, $5, $7}')" "+%Y-%m-%d 00:00:00"`; &#13;
+echo "&lt;result&gt;$result&lt;/result&gt;";&#13;
+else &#13;
+echo "&lt;result&gt;Not installed&lt;/result&gt;";&#13;
+fi&#13;
+</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE extensionAttribute PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<extensionAttribute>
+  <displayName>Java Vendor and Version</displayName>
+  <displayInCategory/>
+  <dataType>string</dataType>
+  <description>This is an updated version of the Java Vendor extension attribute submitted by Richard Trouton. This will check for the vendor that is installed, Apple or Oracle, and then grab the version information for what's installed. Works on OS X 10.8 and 10.9</description>
+  <scriptContentsMac>#!/bin/sh
+
+#  Java_Vendor_and_Version.sh
+#  
+#  Original version for vendor by Richard Trouton on 5/8/13.
+#  Modified to include version by Craig Ernst on 3/17/14.
+#  Tested on Mac OS X 10.8 and 10.9
+#
+#  Keep in mind that on a clean install of 10.8 the command 'java -version'
+#  will prompt to install Apples old version of Java SE 6 if not installed,
+#  and that 'java -version' will not give the true Internet Plug-In version.
+#  Even after installing an Oracle version of Java that version info is not updated.
+#
+#  Also keep in mind that on 10.9 the command 'java -version' behaves similarly.
+#  Although instead of a prompt to install Apple's version it will direct you
+#  to Oracle's website.
+#
+#  If reporting no Java or an Apple version you should consider installing
+#  an Oracle version as Apple no longer updates Java.
+#
+#!/bin/bash
+
+javaVendor=`/usr/bin/defaults read /Library/Internet\ Plug-Ins/JavaAppletPlugin.plugin/Contents/Info CFBundleIdentifier`
+
+if [ "$javaVendor" = "com.oracle.java.JavaAppletPlugin" ]; then
+    javaVersion=`/usr/bin/defaults read /Library/Internet\ Plug-Ins/JavaAppletPlugin.plugin/Contents/Info CFBundleVersion`
+    result="Oracle $javaVersion"
+elif [ "$javaVendor" = "com.apple.java.JavaAppletPlugin" ]; then
+    javaVersion=`/usr/bin/defaults read /Library/Internet\ Plug-Ins/JavaAppletPlugin.plugin/Contents/Info CFBundleVersion`
+    result="Apple $javaVersion"
+elif [ "$javaVendor" = "" ]; then
+    result="No Java Plug-In Available"
+fi
+
+echo "&lt;result&gt;$result&lt;/result&gt;"</scriptContentsMac>
+</extensionAttribute>

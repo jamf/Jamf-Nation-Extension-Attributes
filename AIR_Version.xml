@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>AIR Version</displayName>
+<description/>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+&#13;
+# Christoph von Gabler-Sahm (christoph.gabler-sahm@computacenter.com)&#13;
+# Version 1.0&#13;
+#&#13;
+# Modified by Sam Novak (snovak@uwsp.edu) for AIR&#13;
+&#13;
+# checks installed version of AIR Framework&#13;
+&#13;
+&#13;
+# Plugin version&#13;
+S_VERSION=$( /usr/bin/defaults read /Library/Frameworks/Adobe\ AIR.framework/Versions/Current/Resources/Info CFBundleVersion 2&gt;/dev/null )&#13;
+&#13;
+&#13;
+if [[ "${S_VERSION}" != "" ]]; then&#13;
+EA_RESULT="${S_VERSION}"&#13;
+else&#13;
+EA_RESULT="Not installed"&#13;
+fi&#13;
+&#13;
+echo "&lt;result&gt;${EA_RESULT}&lt;/result&gt;"</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

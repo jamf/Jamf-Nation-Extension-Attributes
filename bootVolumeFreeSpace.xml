@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE extensionAttribute PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<extensionAttribute>
+  <displayName>Boot Volume Free Space</displayName>
+  <displayInCategory/>
+  <dataType>integer</dataType>
+  <description>Returns the free space on the current boot volume in GB, rounded down to the nearest integer.</description>
+  <scriptContentsMac>#!/bin/bash
+
+free=`diskutil info /|grep "Free Space"|awk '{print $4}'`
+
+echo "&lt;result&gt;"${free%.*}"&lt;/result&gt;"</scriptContentsMac>
+</extensionAttribute>

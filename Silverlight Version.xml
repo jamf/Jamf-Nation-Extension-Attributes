@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Silverlight Version</displayName>
+<description>Checks if Microsofts Silverlight Plugin is installed, if it’s not it returns the message not installed, if it is installed it returns the version number.</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+####################################################################################################&#13;
+#&#13;
+# More information: http://macmule.com/2011/03/07/ea-get-silverlight-version/&#13;
+#&#13;
+# GitRepo: https://github.com/macmule/getSilverlightPluginVersion/&#13;
+#&#13;
+# License: http://macmule.com/license/&#13;
+#&#13;
+####################################################################################################&#13;
+&#13;
+# Checks to see if the plugin exists&#13;
+if [ -e /Library/Internet\ Plug-Ins/Silverlight.plugin ]; then&#13;
+    result="$(defaults read /Library/Internet\ Plug-Ins/Silverlight.plugin/Contents/Info SilverlightVersion)"&#13;
+    echo "$result"&#13;
+  else&#13;
+    echo "Not installed"&#13;
+fi</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

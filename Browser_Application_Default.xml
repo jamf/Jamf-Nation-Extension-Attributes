@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Browser Application Default</displayName>
+<description>This will determine the last user logged in and determine the default handler of content 'http'.  </description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+#####################################################################&#13;
+# Find the Default Browser on Mac OS X for the last logged in user&#13;
+# Cobbled together from other's hard work&#13;
+# By: Christopher T. Miller, Dated: 2014-11-13, Last Mod: 20141119&#13;
+# For ITSD-ISS of JHU-APL&#13;
+#####################################################################&#13;
+&#13;
+# use the 'last' command to find the last real user.&#13;
+# It will skip over the following users: reboot, shutdown, root, wtmp, adobeinstall, and any user you specify.&#13;
+LastUser=`/usr/bin/last console | /usr/bin/awk '{print $1}' | /usr/bin/sed -e '/^$/d' -e '/^root$/d' -e '/^wtmp$/d' -e '/^adobeinstall$/d' | /usr/bin/awk 'NR&gt;1{exit};1'`&#13;
+&#13;
+# Scour the Last User's LaunchServices plist file for the handler of content type "http"&#13;
+DefaultBrowser=$(/usr/bin/defaults read /Users/$LastUser/Library/Preferences/com.apple.LaunchServices.plist | grep http -B 2  | awk '{print $3}' | tail -n 2 | head -n 1 | sed -e 's/[";,)]//g')&#13;
+&#13;
+# Check the value of variable "DefaultBrowser" for absence of data and insert a negative finding if blank (IE no Default Browser App Setting)&#13;
+# This helps define which Macs have or haven't yet inventoried with the extension attribute&#13;
+if [ "$DefaultBrowser" == "" ] &#13;
+	then&#13;
+		DefaultBrowser="No Default Browser Defined"&#13;
+fi	&#13;
+&#13;
+# Output the results&#13;
+echo "&lt;result&gt;$DefaultBrowser&lt;/result&gt;"&#13;
+&#13;
+exit 0</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

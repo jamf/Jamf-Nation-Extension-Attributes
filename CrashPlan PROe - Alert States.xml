@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+  <displayName>CrashPlan PROe - Alert States</displayName>
+  <displayInCategory>Backup</displayInCategory>
+  <description>This attribute displays the CrashPlan PROe alert states of the computer.  "OK" if the computer has backed up within defined days, "WARN" if computer has exceeded "warning" threshold, "ALERT" if computer has exceeded "alert" threshold.  This attribute applies to both Mac and Windows.</description>
+  <dataType>string</dataType>
+  <scriptContentsMac>
+#!/bin/sh
+# Modified 1/24/13
+# Third-Part Product page for CrashPlan PROe - https://jamfnation.jamfsoftware.com/viewProduct.html?id=217
+
+CP_ServerAddress="EditFromTemplate_CrashPlan_PROe_Server_Name_-_including_protocol_and_port"
+CP_AdminUsername="EditFromTemplate_CrashPlan_PROe_Service_Account_Username"
+CP_AdminPassword="EditFromTemplate_CrashPlan_PROe_Service_Account_Password"
+
+if [ "$CP_ServerAddress" == "" ] || [ "$CP_AdminUsername" == "" ] || [ "$CP_AdminPassword" == "" ];then
+        echo "&lt;result&gt;Please ensure all variables are set in the extension attribute script.&lt;/result&gt;"
+elif [ -f /Library/Application\ Support/CrashPlan/.identity ];then
+        SERVER=`echo $CP_ServerAddress | sed 's|/$||'` 
+        GUID=`cat /Library/Application\ Support/CrashPlan/.identity | sed -n 's/guid=//p'`
+        
+        DATA=`curl -q -u "$CP_AdminUsername:$CP_AdminPassword" -k "$SERVER/api/Computer?guid=$GUID" | sed -n 's/.*alertStates": \["\([^"]*\).*/\1/p'`
+        echo "&lt;result&gt;$DATA&lt;/result&gt;"
+else
+        echo "&lt;result&gt;Not installed&lt;/result&gt;"
+fi  
+  </scriptContentsMac>
+    <scriptTypeWindows>VBScript</scriptTypeWindows>
+  <scriptContentsWindows>
+On Error Resume Next
+
+'Declaration of Objects, Constants, Variables
+Dim objFSO
+Dim objTextFile
+Dim strTextFile
+Dim objHTTP
+Dim arrResults
+Dim strResult
+Dim GUID
+Dim CP_ServerAddress
+Dim CP_AdminUsername
+Dim CP_AdminPassword
+Dim SERVER
+
+'Set Variables
+CP_ServerAddress = "EditFromTemplate_CrashPlan_PROe_Server_Name_-_including_protocol_and_port"
+CP_AdminUsername = "EditFromTemplate_CrashPlan_PROe_Service_Account_Username"
+CP_AdminPassword = "EditFromTemplate_CrashPlan_PROe_Service_Account_Password"
+
+'Validate Variables Have Been Set
+If CP_ServerAddress = "" Or CP_AdminUsername = "" Or CP_AdminPassword = "" Then
+	WScript.Echo "&lt;result&gt;Please ensure all variables are set in the extension attribute script.&lt;/result&gt;"
+Else
+	'Set Objects
+	Set objFSO = CreateObject("Scripting.FileSystemObject")
+	Set objHTTP = CreateObject("WinHttp.WinHttpRequest.5.1")
+
+	'Set Constants
+	Const WinHttpRequestOption_SslErrorIgnoreFlags = 4
+	Const WinHttpRequestOption_EnableHttpsToHttpRedirects = 12
+	
+	'Read in CrashPlan GUID
+	Set objTextFile = objFSO.OpenTextFile("C:\ProgramData\CrashPlan\.identity")
+	strTextFile = objTextFile.ReadAll
+	objTextFile.Close
+	arrResults=Split(strTextFile, Chr(13))
+	
+	For i = 0 to ubound(arrResults)
+		If inStr(arrResults(i), "guid") &gt; 0 Then
+			strResult = Replace(arrResults(i), "guid=", "")
+			GUID = strResult
+			strResult=""
+			Exit for
+		End if
+	Next
+
+	If GUID = "" Then
+		WScript.Echo "&lt;result&gt;Not installed&lt;/result&gt;"
+	Else
+		If Right(CP_ServerAddress,1) = "/" Then
+			SERVER = Left(CP_ServerAddress, Len(CP_ServerAddress) -1)
+		Else
+			SERVER = CP_ServerAddress
+		End if
+		
+		'Connect to the CrashPlan ProE Server Rest API
+		objHTTP.open "GET", SERVER &amp; "/api/computers?guid=" &amp; GUID, False 
+		
+		objHTTP.Option(WHttpRequestOption_SslErrorIgnoreFlags) = &amp;H3300
+		objHTTP.Option(WinHttpRequestOption_EnableHttpsToHttpRedirects) = True
+		
+		objHTTP.SetCredentials CP_AdminUsername, CP_AdminPassword, 0
+
+		objHTTP.send
+		
+		'Parse the JSON Output
+		If objHTTP.Status = "200" Then
+			arrResults=Split(objHTTP.ResponseText, ",")
+			For i = 0 to ubound(arrResults)
+				If inStr(arrResults(i), "alertStates") &gt; 0 Then
+					strResult = Replace(arrResults(i), chr(34), "", 1, -1)
+					strResult = Replace(strResult, "alertStates:", "")
+					strResult = Replace(strResult, "[", "", 1, -1)
+					strResult = Replace(strResult, "]", "", 1, -1)
+					strResult = Replace(strResult, chr(10), "", 1, -1)
+					strResult = Trim(strResult)
+					Exit for
+				End if
+			Next
+
+			WScript.Echo "&lt;result&gt;" &amp; strResult &amp; "&lt;/result&gt;"
+		Else
+			WScript.Echo "&lt;result&gt;ERROR RETRIEVING DATA: " &amp; objHTTP.Status &amp; " - " &amp; objHTTP.StatusText &amp; "&lt;/result&gt;"
+		End If
+	End If
+End If
+  </scriptContentsWindows>
+</extensionAttribute>

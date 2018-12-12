@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE extensionAttribute PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<extensionAttribute>
+  <displayName>Server App Caching Service Data Path</displayName>
+  <displayInCategory/>
+  <dataType>string</dataType>
+  <description>This Extension Attribute will Identify if the Server App is installed to /Applications/Server.app and if so it will report the Data Path the Service is caching to.</description>
+  <scriptContentsMac>#!/bin/sh
+
+if [ /Applications/Server.app ]; then
+
+/bin/echo "&lt;result&gt;$(serveradmin settings caching:DataPath | awk '{print $3}'| sed s/\"//g)&lt;/result&gt;"
+
+else
+  /bin/echo "&lt;result&gt;Server App Not Installed&lt;/result&gt;"
+  
+fi
+exit</scriptContentsMac>
+</extensionAttribute>

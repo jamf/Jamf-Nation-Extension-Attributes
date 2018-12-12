@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>profileName Present</displayName>
+<description>This extension attribute determines whether a given Configuration Profile is present on the computer.&#13;
+The name of the profile being searched for must be filled in between the quotes in the "Define Profile" section of the script.  It is also recommended to replace "profileName in the display name of this extension attribute.&#13;
+Values returned are "Yes" if profile is present and "No" if profile is not present.</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+&#13;
+###############################################################################&#13;
+# Define Profile                                                              #&#13;
+# Fill in the name of the profile being searched for between the quotes below #&#13;
+###############################################################################&#13;
+&#13;
+profileName=""&#13;
+&#13;
+###############################################&#13;
+# Script Body - Do not modify below this line #&#13;
+###############################################&#13;
+&#13;
+if [ "$(profiles -Pv | grep "$profileName" | cut -d ' ' -f 4-)" == "$profileName" ]&#13;
+then echo "&lt;result&gt;Yes&lt;/result&gt;"&#13;
+else echo "&lt;result&gt;No&lt;/result&gt;"&#13;
+fi&#13;
+&#13;
+exit 0</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

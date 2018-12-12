@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>SSH_Version</displayName>
+<description>displays the version of OpenSSH (os x's ssh) on the client machine</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+&#13;
+ssh_version=$(/usr/bin/ssh -V 2&gt;&amp;1)&#13;
+&#13;
+echo "&lt;result&gt;$ssh_version&lt;/result&gt;"</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

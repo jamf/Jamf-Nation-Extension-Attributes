@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute>	<displayName>Parallels Windows VM Application Inventory</displayName>	<displayInCategory>Virtualization</displayInCategory>	<description>This attribute displays the inventory of a Windows virtual machine in Parallels Desktop for Mac.</description>	<dataType>string</dataType>	<scriptContentsMac>#!/bin/shcurrentUser=`ls -l /dev/console | awk {'print $3'}`
+sharedApplicationDir=`ls /Users/$currentUser/Applications\ \(Parallels\)/ | grep {`
+sharedBaseDir="/Users/$currentUser/Applications (Parallels)"
+individualApplicationDir=
+
+echo "&lt;result&gt;`ls "$baseDir/$applicationDir" | grep .app`&lt;/result&gt;"	</scriptContentsMac></extensionAttribute>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Active Directory OU</displayName>
+<description>If the computer is bound to Active Directory it will show the path to where it is located in AD. Helpful for Smart Groups based on objects in a particular OU. </description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+ad_computer_name=`dsconfigad -show | grep "Computer Account" | awk '{print $4}'`&#13;
+ad_computer_ou=`dscl /Search read /Computers/$ad_computer_name | \&#13;
+grep -A 1 dsAttrTypeNative:distinguishedName | \&#13;
+cut -d, -f2- | sed -n 's/OU\=//gp' | \&#13;
+sed -n 's/\(.*\),DC\=/\1./gp' | \&#13;
+sed -n 's/DC\=//gp' | \&#13;
+awk -F, '{&#13;
+N = NF&#13;
+while ( N &gt; 1 )&#13;
+{&#13;
+printf "%s/",$N&#13;
+N--&#13;
+}&#13;
+&#13;
+printf "%s",$1&#13;
+}'`&#13;
+&#13;
+echo "&lt;result&gt;$ad_computer_ou&lt;/result&gt;"&#13;
+</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

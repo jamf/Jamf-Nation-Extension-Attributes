@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute><dataType>String</dataType><displayName>Dashboard: Email Addresses</displayName><description>Gather the email accounts that are set up in Apple Mail and Microsoft Outlook for relay to Robot Cloud Dashboard. Required for Zendesk integration.</description><displayInCategory>Extension Attributes</displayInCategory><scriptContentsMac>#!/bin/bash
+
+# Gather Email Addresses
+# Written by Robot Cloud for Dashboard
+# http://www.forgetcomputers.com/dashboard/
+
+##################################[ VARIABLE DEFINITIONS ]#################################
+###########################################################################################
+
+pathData=&quot;/usr/local/dashboard/data/EmailAddresses.dat&quot;
+
+####################################[ SCRIPT BEGINS ]######################################
+############################[ DO NOT MODIFY BELOW THIS LINE ]##############################
+
+function DashboardStructure {
+  # Ensure the appropriate directories are in place.
+  mkdir -p /usr/local/dashboard/{bin,data,logs}
+  CheckAppleMail
+  CheckOutlook
+}
+
+function CheckAppleMail {
+  if [ `ps aux | grep -c &quot;Mail.ap[p]&quot;` -gt &quot;0&quot; ]; then
+    accountsMail=$(/usr/bin/osascript &lt;&lt;-EOF
+    tell application &quot;Mail&quot;
+    user name of every account
+    end tell
+    EOF)
+    for account in $accountsMail; do
+      if [ `echo $account | grep -c &quot;@&quot;` -gt &quot;0&quot; ]; then
+        echo $account | tr -d &quot;,&quot; &gt;&gt; &quot;$pathData&quot;
+      fi
+    done
+  fi
+}
+
+function CheckOutlook {
+  if [ `ps aux | grep -c &quot;Microsoft Outlook.ap[p]&quot;` -gt &quot;0&quot; ]; then
+    accountsOutlook=`/usr/bin/osascript &lt;&lt;-EOT
+    tell application &quot;Microsoft Outlook&quot;
+    user name of every exchange account
+    end tell
+    EOT`
+    for account in $accountsOutlook; do
+      if [ `echo $account | grep -c &quot;@&quot;` -gt &quot;0&quot; ]; then
+        echo $account | tr -d &quot;,&quot; &gt;&gt; &quot;$pathData&quot;
+      fi
+    done
+    accountsOutlookIMAP=$(/usr/bin/osascript &lt;&lt;-EOF
+    tell application &quot;Microsoft Outlook&quot;
+    user name of every imap account
+    end tell
+    EOF)
+    for account in $accountsOutlookIMAP; do
+      if [ `echo $account | grep -c &quot;@&quot;` -gt &quot;0&quot; ]; then
+        echo $account | tr -d &quot;,&quot; &gt;&gt; &quot;$pathData&quot;
+      fi
+    done
+  fi
+}
+
+function ReportResult {
+  if [ -e &quot;$pathData&quot; ]; then
+    cat &quot;$pathData&quot; | sort -u &gt; &quot;$pathData.tmp&quot;
+    mv &quot;$pathData.tmp&quot; &quot;$pathData&quot;
+    echo &quot;&lt;result&gt;`cat $pathData`&lt;/result&gt;&quot;
+  else
+    echo &quot;&lt;result&gt;N/A&lt;/result&gt;&quot;
+  fi
+}
+
+####################################[ FUNCTION CALLS ]#####################################
+###########################################################################################
+
+DashboardStructure
+ReportResult</scriptContentsMac></extensionAttribute>

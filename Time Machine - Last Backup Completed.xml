@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Time Machine - Last Backup Completed</displayName>
+<description>Latest Time Machine backup timestamp. Updated for OS X Mavericks compatibility.</description>
+<dataType>date</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+&#13;
+# Gather Time Machine Last Backup Status for JSS&#13;
+# Written by Chad Nielsen&#13;
+# Forget Computers, Get Creative!&#13;
+# Last Modified on October 25th, 2013.&#13;
+&#13;
+# Version History&#13;
+# 1.0 - original attribute by JAMF Software supporting OS X 10.8 and lower.&#13;
+# 1.1 - added ability to check status in OS X 10.9 Mavericks.&#13;
+&#13;
+# Determine the OS Version&#13;
+OS=$(sw_vers | awk '/ProductVersion/{print substr($2,1,4)}')&#13;
+&#13;
+# Check the OS, and then check the values in the appropriate corresponding files.&#13;
+if [ "$OS" = "10.9" ]; then&#13;
+    # Check to see if autobackup is enabled.&#13;
+	autoBackupEnabled=$(defaults read /Library/Preferences/com.apple.TimeMachine | awk '/AutoBackup/{print $3}' | tr -d ";")&#13;
+	# A value of 1 signifies that Time Machine is on, a value of 0 is off. &#13;
+	if [ "$autoBackupEnabled" = "1" ]; then&#13;
+		lastBackupTime=$(defaults read /Library/Preferences/com.apple.TimeMachine | awk '/SnapshotDates/{getline; print substr($0,9)}' | sed 's/^ *//g' | tr -d '"')&#13;
+	else&#13;
+		lastBackupTime="Not enabled."&#13;
+	fi&#13;
+else&#13;
+	# This is the traditional attribute code provided by JAMF, modified slightly.&#13;
+	if [ -f /private/var/db/.TimeMachine.Results.plist ]; then&#13;
+    	lastBackupTime=$(defaults read /private/var/db/.TimeMachine.Results "BACKUP_COMPLETED_DATE")&#13;
+	else&#13;
+		lastBackupTime="Not enabled."&#13;
+	fi&#13;
+fi&#13;
+&#13;
+# Report the Time Machine status to the JSS.&#13;
+echo "&lt;result&gt;$lastBackupTime&lt;/result&gt;"</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

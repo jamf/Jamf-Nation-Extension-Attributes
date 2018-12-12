@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Symantec - Virus Definition Date</displayName>
+<description>This attribute returns the Virus Definitions Date for Symantec.  This attribute template applies to Norton AntiVirus (v 10), and Norton AntiVirus (v 11) as well as Symantec Endpoint Protection v11 and v12.  </description>
+<dataType>date</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+########################################################################################################&#13;
+# Find the date of Virus Definitions for Norton AntiVirus or Symantec EndPoint&#13;
+# This script has been verified to work on Norton AntiVirus (v10, v11) and Symantec Endpoint (v11, v12). &#13;
+# Cobbled together from other's hard work&#13;
+# Modification for SEP v12ru4 by Christopher Miller&#13;
+# for ITSD-ISS of JHU-APL, Dated 2015-01-19, LastMod: 2015-10-23&#13;
+########################################################################################################&#13;
+&#13;
+#Check to see if Norton v10 is installed&#13;
+if [ -f "/Library/Application Support/Norton Solutions Support/Norton AntiVirus/Engine/WHATSNEW.TXT" ]; then&#13;
+	result=`/bin/date -j -f "%b %d, %Y" "$(cat "/Library/Application Support/Norton Solutions Support/Norton AntiVirus/Engine/WHATSNEW.TXT" | grep "Symantec Security Response" | awk '{print $5, $6, $7}')" "+%Y-%m-%d 00:00:00"`&#13;
+	SEPinstall="Yes"&#13;
+fi	&#13;
+&#13;
+#Check to see if Norton v11 is installed&#13;
+if [ -f "/Library/Application Support/Symantec/AntiVirus/Engine/WHATSNEW.TXT" ]; then&#13;
+	result=`/bin/date -j -f "%b %d, %Y" "$(cat "/Library/Application Support/Symantec/AntiVirus/Engine/WHATSNEW.TXT" | grep "Symantec Security Response" | awk '{print $5, $6, $7}')" "+%Y-%m-%d 00:00:00"`&#13;
+	SEPinstall="Yes"&#13;
+fi&#13;
+&#13;
+#Check to see if SEP v12ru4 or higher is installed&#13;
+#NOTE: SEP v12ru5 and ru6  high versions re-introduced the 'Engine' Directory&#13;
+if [ -f "/Library/Application Support/Symantec/AntiVirus/engine.mfst" ]; then&#13;
+	result=`/bin/date -j -f "%Y%m%d" $(cat "/Library/Application Support/Symantec/AntiVirus/engine.mfst" | cut -c 2-12) "+%Y-%m-%d 00:00:00"`		&#13;
+	SEPinstall="Yes"&#13;
+fi&#13;
+&#13;
+#Check to see if we found any version of SEP &#13;
+if [ $SEPinstall != "Yes" ]; then&#13;
+	result="Not Installed"			&#13;
+fi&#13;
+&#13;
+echo "&lt;result&gt;$result&lt;/result&gt;"&#13;
+exit 0</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE extensionAttribute PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<extensionAttribute>
+  <displayName>Quest QAS Version Info</displayName>
+  <displayInCategory/>
+  <dataType>string</dataType>
+  <description>Copy the script below into your EA and choose Data Type: String. It will output the version number only without any addition filler information.&#13;
+&#13;
+---&#13;
+#!/bin/bash&#13;
+#Output the Version Number of Quest Authentication Services&#13;
+#Freddie Cox 2012&#13;
+&#13;
+version=`vastool -v | grep QAS\ Version | awk '{print $4}'`&#13;
+&#13;
+echo "&lt;result&gt;$version&lt;/result&gt;"&#13;
+---</description>
+  <scriptContentsMac>#!/bin/bash
+#Output the Version Number of Quest Authentication Services
+#Freddie Cox 2012
+
+version=`vastool -v | grep QAS\ Version | awk '{print $4}'`
+
+echo "&lt;result&gt;$version&lt;/result&gt;"</scriptContentsMac>
+</extensionAttribute>

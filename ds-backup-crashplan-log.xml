@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute><dataType>String</dataType><displayName>DS Backup: CrashPlan Log</displayName><description>Parses local CrashPlan log for backup info.</description><displayInCategory>Backup</displayInCategory><scriptContentsMac>#!/usr/bin/env python
+
+from codecs import open
+from datetime import datetime, timedelta, tzinfo
+from xml.dom.minidom import Element
+import os
+import re
+import time
+
+APP_LOG = '/Library/Logs/CrashPlan/app.log'
+
+ZERO = timedelta(0)
+
+RE_DEST_SIZE = re.compile('remoteManifestSize=(?P&lt;total&gt;\d+)')
+
+XML_TAG_LOOKUP = {
+    'backup_sets': ('backup_set', 'id'),
+    'destinations': ('destination', 'name')
+}
+
+
+def cp_stats(applog):
+    if not os.path.exists(applog):
+        return no_applog(applog)
+
+    applog = open(applog, 'U', 'utf-8').read()
+    if is_old_proe_client(applog):
+        backup_sets, destinations = cpp(applog)
+    else:
+        backup_sets, destinations = non_cpp(applog)
+    return mkresult(backup_sets, destinations).toxml()
+
+
+def is_old_proe_client(applog):
+    RE_PRO = re.compile('ProClient.*=\s+(.*)')
+    try:
+        if RE_PRO.search(applog).group(1).lower() == 'true':
+            return True
+        return False
+    except AttributeError:
+        return False
+
+
+def mkresult(backup_sets, destinations):
+    r = Element('result')
+    c = r.appendChild(Element('crashplan_log'))
+    for k, v in XML_TAG_LOOKUP.items():
+        c.appendChild(dict_to_xml(locals()[k], k, v[0], v[1]))
+    return r
+
+
+def dict_to_xml(d, container, node, key_label):
+    c = Element(container)
+
+    for k, v in d.items():
+        n = c.appendChild(Element(node))
+        n.setAttribute(key_label, k)
+        for k, v in v.items():
+            if type(v) is not dict:
+                n.setAttribute(k, v)
+            else:
+                n_label, k_label = XML_TAG_LOOKUP[k]
+                n.appendChild(dict_to_xml(v, k, n_label, k_label))
+    return c
+
+
+def _parse_dest_detail(block, regex, destinations):
+    m = regex.search(block)
+    dest_name = m.group('name')
+    cp_props = open(
+        os.path.join(m.group('cache').strip(), 'cp.properties'), 'U',
+        'utf-8').read()
+    destinations[dest_name] = {
+        'total': RE_DEST_SIZE.search(cp_props).group('total')}
+
+    return m, dest_name, cp_props
+
+
+class UTC(tzinfo):
+    def utcoffset(self, dt):
+        return ZERO
+
+    def tzname(self, dt):
+        return &quot;UTC&quot;
+
+    def dst(self, dt):
+        return ZERO
+
+
+def as_utc(timestr):
+    RE_DT = re.compile('\d+-\d+-\d+T\d+:\d+:\d+')
+    dt = datetime.fromtimestamp(
+        time.mktime(
+            time.strptime(RE_DT.search(timestr).group(), '%Y-%m-%dT%H:%M:%S')),
+        UTC()
+    )
+    return dt.isoformat()
+
+
+def cpp(applog):
+    RE_BACKUP_SIZE = re.compile('totalSize\s+=\s+(?P&lt;size&gt;.*)')
+    RE_DEST_BLOCK = re.compile('DESTINATIONS\s+(?P&lt;block&gt;\d+.*?)\s+\*{99}',
+                               re.M | re.DOTALL)
+    RE_DEST_DETAIL = re.compile(
+        '(?P&lt;id&gt;\d+), (?P&lt;name&gt;.*?),.* (?P&lt;percent&gt;\d+.*?)% complete,.*'
+        'cache=(?P&lt;cache&gt;.*)')
+    RE_LAST_BACKUP = re.compile('lastBackupTimestamp=(.*)')
+
+    backup_set = {'name': 'Default'}
+    backup_sets = {'1': backup_set}
+    destinations = {}
+
+    m = RE_BACKUP_SIZE.search(applog)
+    # There's a possibility that CP is scanning the drive and totalSize is not
+    # present.
+    if m:
+        backup_set['size'] = m.group('size').strip()
+
+    for l in RE_DEST_BLOCK.search(applog).group('block').split('\n'):
+        m, dest_name, cp_props = _parse_dest_detail(
+            l, RE_DEST_DETAIL, destinations)
+        last_backup = RE_LAST_BACKUP.search(cp_props).group(1).\
+            replace('\\', '')
+        d = backup_set.setdefault('destinations', {})
+        d[dest_name] = {'percent_complete': m.group('percent'),
+                        'last_backup': as_utc(last_backup)}
+
+    return backup_sets, destinations
+
+
+def non_cpp(applog):
+    RE_BACKUP_NAME = re.compile(
+        '&lt;backupSet id=&quot;(?P&lt;id&gt;\d+)&quot;&gt;\s+&lt;name&gt;(?P&lt;name&gt;.*?)&lt;/name&gt;', re.M
+    )
+    RE_BACKUP_SIZE = re.compile(
+        'BACKUP SET (?P&lt;id&gt;\d+).*?totalSize\s+=\s+(?P&lt;size&gt;.*?)\n',
+        re.M | re.DOTALL
+    )
+    RE_DEST_BLOCK = re.compile(
+        '-{99}\s+DESTINATIONS\s+(?P&lt;block&gt;\d+.*?)\s+(?=-{99})', re.M |
+        re.DOTALL
+    )
+    RE_DEST_DETAIL = re.compile(
+        '(?P&lt;id&gt;\d+), (?P&lt;name&gt;.*?),.*cache=(?P&lt;cache&gt;.*)'
+    )
+    RE_SET_COMPLETE = re.compile('setId=(?P&lt;id&gt;\d+):\s+(?P&lt;percent&gt;.*)%')
+
+    backup_sets = {}
+    destinations = {}
+
+    for m in RE_BACKUP_NAME.finditer(applog):
+        backup_sets.setdefault(m.group('id'), {})['name'] = m.group('name')
+
+    for m in RE_BACKUP_SIZE.finditer(applog):
+        backup_sets[m.group('id')]['size'] = m.group('size').strip()
+
+    for db in RE_DEST_BLOCK.finditer(applog):
+        m, dest_name, cp_props = _parse_dest_detail(
+            db.group('block'), RE_DEST_DETAIL, destinations)
+        for m in RE_SET_COMPLETE.finditer(db.group('block')):
+            d = backup_sets[m.group('id')].setdefault('destinations', {})
+            d[dest_name] = {'percent_complete': m.group('percent')}
+            re_last_backup = re.compile(
+                'lastBackupTimestamp_%s=(.*)' % m.group('id'))
+            d[dest_name]['last_backup'] = as_utc(re_last_backup.search(
+                cp_props).group(1).replace('\\', ''))
+
+    return backup_sets, destinations
+
+
+def no_applog(applog):
+    return '&lt;result&gt;%s does not exist&lt;/result&gt;' % applog
+
+
+if __name__ == '__main__':
+    print(cp_stats(APP_LOG))</scriptContentsMac></extensionAttribute>

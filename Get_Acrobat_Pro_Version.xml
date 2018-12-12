@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Get Acrobat Pro Version</displayName>
+<description>This EA gets the currently installed version of Acrobat XI Pro if installed. If not installed, it reports "Not installed."</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+&#13;
+#&#13;
+# by emily k @ volusion 2014-06-10&#13;
+# Modified by joe zima @ gatech 2014-11-17&#13;
+# checks for Adobe Acrobat XI Pro version&#13;
+#&#13;
+&#13;
+if [ -f "/Applications/Adobe Acrobat XI Pro/Adobe Acrobat Pro.app/Contents/Info.plist" ] ; then&#13;
+	VERSION=$( defaults read "/Applications/Adobe Acrobat XI Pro/Adobe Acrobat Pro.app/Contents/Info.plist" CFBundleVersion )&#13;
+else&#13;
+	VERSION="Not installed."&#13;
+fi&#13;
+&#13;
+echo "&lt;result&gt;$VERSION&lt;/result&gt;"</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

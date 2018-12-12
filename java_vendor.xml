@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE extensionAttribute PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<extensionAttribute>
+  <displayName>Java Vendor</displayName>
+  <displayInCategory/>
+  <dataType>string</dataType>
+  <description>This attribute detects if a Mac's Java browser plug-in in /Library/Internet Plug-Ins was supplied by Apple or Oracle. If no Java plug-in is detected, a "No Java Plug-In Available" message is displayed.</description>
+  <scriptContentsMac>#!/bin/bash
+
+javaVendor=`/usr/bin/defaults read /Library/Internet\ Plug-Ins/JavaAppletPlugin.plugin/Contents/Info CFBundleIdentifier`
+
+if [ "$javaVendor" = "com.oracle.java.JavaAppletPlugin" ]; then
+        result=Oracle
+elif [ "$javaVendor" = "com.apple.java.JavaAppletPlugin" ]; then
+        result=Apple
+elif [ "$javaVendor" = "" ]; then
+        result="No Java Plug-In Available"
+fi
+
+echo "&lt;result&gt;$result&lt;/result&gt;"
+
+
+</scriptContentsMac>
+</extensionAttribute>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute>
+<displayName>Adobe Remote Update Manager Version</displayName>
+<description>Returns the installed version of the Adobe Remote Update Manager</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/bash&#13;
+&#13;
+if [ -f /usr/local/bin/RemoteUpdateManager  ]; then&#13;
+    chmod +x /usr/local/bin/RemoteUpdateManager&#13;
+    S_VERSION=$(/usr/local/bin/RemoteUpdateManager -h | grep BuildVersion | cut -d ':' -f2 | cut -d ' ' -f2 2&gt;/dev/null )&#13;
+    EA_RESULT="${S_VERSION}"&#13;
+elif [ -a /usr/sbin/RemoteUpdateManager ]; then&#13;
+    S_VERSION="Pre 2015.5 Release"&#13;
+    EA_RESULT="${S_VERSION}"&#13;
+else&#13;
+    EA_RESULT="Not installed"&#13;
+fi&#13;
+        &#13;
+echo "&lt;result&gt;${EA_RESULT}&lt;/result&gt;"&#13;
+</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

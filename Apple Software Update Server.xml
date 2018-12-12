@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute><displayName>Apple Software Update Server</displayName><displayInCategory>Software Updates</displayInCategory><dataType>string</dataType><description>This attribute returns the DNS/IP address of the Apple Software Update Server that is set on the client machine.
+</description><scriptContentsMac>#!/bin/sh
+
+SWU=`defaults read /private/var/root/Library/Preferences/com.apple.SoftwareUpdate CatalogURL`
+
+echo "&lt;result&gt;$SWU&lt;/result&gt;"
+</scriptContentsMac><scriptContentsWin>
+</scriptContentsWin></extensionAttribute>

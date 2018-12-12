@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute>	<displayName>EnCase - eDiscovery Process</displayName>	<displayInCategory>Security</displayInCategory>	<dataType>string</dataType>	<description>This attribute will show if the EnCase eDiscovery process is running or not. It works for both the intel, and PPC versions.</description>	<scriptContentsMac>#!/bin/sh
+#This has been tested on 10.5.x, 10.6.x, 10.7.2 OS versions.
+#Sean Gallagher - seanjsgallagher@me.com
+
+#Check to see if eDiscovery process is running
+PROCESS=enosx
+number=$(/bin/ps aux | /usr/bin/grep $PROCESS | /usr/bin/grep -v grep | /usr/bin/wc -l | /usr/bin/awk '{print $1}')
+
+if [ $number -gt 0 ]; then
+	/bin/echo "&lt;result&gt;Running&lt;/result&gt;"
+else
+	/bin/echo "&lt;result&gt;Not Running&lt;/result&gt;"
+fi</scriptContentsMac></extensionAttribute>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute><displayName>Recovery HD Present</displayName><displayInCategory>System Information</displayInCategory><dataType>string</dataType><description>This attribute returns an Apple Recovery HD is present on the boot disk. Examples of returned values include: "Present", "Not Present".  This attribute template applies to drives with Mac OS X 10.7 and later.
+</description><scriptContentsMac>#!/bin/sh
+
+recoveryHDPresent=`/usr/sbin/diskutil list | grep "Recovery HD" | grep disk0`
+
+if [ "$recoveryHDPresent" != "" ]; then
+	echo "&lt;result&gt;Present&lt;/result&gt;"
+else
+	echo "&lt;result&gt;Not Present&lt;/result&gt;"
+fi
+</scriptContentsMac><scriptContentsWin>
+</scriptContentsWin></extensionAttribute>

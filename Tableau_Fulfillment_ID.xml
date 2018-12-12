@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Tableau Fulfillment ID</displayName>
+<description>Displays Fulfillment ID for Tableau Desktop or "Not_Installed" if Tableau is not installed.</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+&#13;
+if [ -e /Applications/Tableau.app/Contents/Frameworks/FlexNet/custactutil ]&#13;
+	then&#13;
+		fidResult=`/Applications/Tableau.app/Contents/Frameworks/FlexNet/custactutil -view | grep "Fulfillment ID:" | tail -n 1 | awk -F ": " '{print $2}'`&#13;
+	else&#13;
+		fidResult="Not_Installed"&#13;
+fi&#13;
+&#13;
+echo "&lt;result&gt;$fidResult&lt;/result&gt;"</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

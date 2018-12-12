@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE extensionAttribute PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<extensionAttribute>
+  <displayName>Version of Acrobat Reader DC installed</displayName>
+  <displayInCategory/>
+  <dataType>string</dataType>
+  <description>Returns the version of Acrobat Reader DC installed.</description>
+  <scriptContentsMac>#!/bin/bash
+
+ver=`/usr/bin/defaults read /Applications/Adobe\ Acrobat\ Reader\ DC.app/Contents/Info CFBundleShortVersionString`
+
+if [ $ver = "" ]; then
+    ver="N/A"
+fi
+echo "&lt;result&gt;$ver&lt;/result&gt;"</scriptContentsMac>
+</extensionAttribute>

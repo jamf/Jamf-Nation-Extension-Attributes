@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>EFI Password</displayName>
+<displayInCategory>Device Security</displayInCategory>
+<dataType>string</dataType>
+<description>Displays "Set" if a firmware password is set; displays "Not Set" if no firmware password is set.
+</description>
+<scriptContentsMac>#!/bin/sh
+################
+# Most authorship of the following script by Jamf Nation user: snovak
+# Additional edits by Jamf Nation user: mwoodruff
+################
+# Regex for OS detection +10.10
+OSREGEX="^1[0-9]$"
+# Gets the OS version
+OSVERS=$(/usr/bin/sw_vers -productVersion | /usr/bin/awk -F. '{print $2}')
+if [[ $OSVERS =~ $OSREGEX ]]; then
+	fwmode=`firmwarepasswd -mode | grep Mode | awk -F. '{print $1}'`
+    fwmode=${fwmode:6}
+else
+	fwmode=`nvram -p | grep security-mode | awk '{print $2}'`
+fi
+if [ "$fwmode" == "none" ]; then
+        echo "&lt;result&gt;Not Set&lt;/result&gt;"
+elif [ "$fwmode" != "" ]; then
+        echo "&lt;result&gt;Set&lt;/result&gt;"
+else 
+	echo "&lt;result&gt;Not Set&lt;/result&gt;"
+fi
+</scriptContentsMac>
+</extensionAttribute>

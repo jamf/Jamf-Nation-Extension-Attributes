@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>Get Adobe Reader Version</displayName>
+<description>This EA gets the currently installed version of Adobe Reader if installed. If not installed, it reports "Not installed."</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+&#13;
+#&#13;
+# by emily k @ volusion 2014-06-10&#13;
+# checks for Adobe Reader version&#13;
+#&#13;
+&#13;
+if [ -f "/Applications/Adobe Reader.app/Contents/Info.plist" ] ; then&#13;
+	VERSION=$( defaults read "/Applications/Adobe Reader.app/Contents/Info.plist" CFBundleVersion )&#13;
+else&#13;
+	VERSION="Not installed."&#13;
+fi&#13;
+&#13;
+echo "&lt;result&gt;$VERSION&lt;/result&gt;"</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

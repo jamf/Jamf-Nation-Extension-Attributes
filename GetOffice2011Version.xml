@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE extensionAttribute PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<extensionAttribute>
+  <displayName>Get Office 2011 Version</displayName>
+  <displayInCategory/>
+  <dataType>string</dataType>
+  <description>This EA gets the currently installed version of Microsoft Office 2011 using the MicrosoftComponentPlugin rather than one of the installed applications. The plugin is always guaranteed installed whereas the applications themselves are not.</description>
+  <scriptContentsMac>#!/bin/sh
+
+if [ -f "/Applications/Microsoft Office 2011/Office/MicrosoftComponentPlugin.framework/Versions/14/Resources/Info.plist" ] ; then
+	VERSION=$( defaults read "/Applications/Microsoft Office 2011/Office/MicrosoftComponentPlugin.framework/Versions/14/Resources/Info" CFBundleShortVersionString )
+else
+	VERSION="Not installed"
+fi
+
+echo "&lt;result&gt;$VERSION&lt;/result&gt;"</scriptContentsMac>
+</extensionAttribute>

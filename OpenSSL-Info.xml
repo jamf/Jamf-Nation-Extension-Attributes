@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>OpenSSL-Info</displayName>
+<description>This will display information regarding the OpenSSL Info on the Mac systems during inventory.  </description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+#&#13;
+############################################################################&#13;
+# Extension Attribute checks the OpenSSL Version number&#13;
+# Cobbled together from other's hard work, by Christopher Miller&#13;
+# for ITSD-ISS of JHU-APL, Dated: 2014-06-13&#13;
+############################################################################&#13;
+OpenSSLVersion=$(openssl version | awk '{print $2}')&#13;
+echo "&lt;result&gt;$OpenSSLVersion&lt;/result&gt;"&#13;
+&#13;
+exit 0</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

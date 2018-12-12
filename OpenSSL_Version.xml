@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>OpenSSL Version</displayName>
+<description>Checks the OpenSSL version.</description>
+<dataType>string</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+	echo "&lt;result&gt;`/usr/bin/openssl version | awk '{print $2}'`&lt;/result&gt;"</scriptContentsMac>
+<scriptContentsWindows/>
+</extensionAttribute>

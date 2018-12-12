@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE extensionAttribute PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<extensionAttribute>
+  <displayName>Caching Service Saved Cache Size</displayName>
+  <displayInCategory/>
+  <dataType>string</dataType>
+  <description>This Extension Attribute verifies that Server.app is installed at /Library/Applications and if installed reports how many bytes are being used by the Caching Service Saved Cache directory.</description>
+  <scriptContentsMac>#!/bin/sh
+
+if [ /Applications/Server.app ]; then
+
+/bin/echo "&lt;result&gt;$(serveradmin settings caching:SavedCacheSize | awk '{print $3}'| sed s/\"//g)&lt;/result&gt;"
+
+else
+  /bin/echo "&lt;result&gt;Server App Not Installed&lt;/result&gt;"
+  
+fi
+exit</scriptContentsMac>
+</extensionAttribute>

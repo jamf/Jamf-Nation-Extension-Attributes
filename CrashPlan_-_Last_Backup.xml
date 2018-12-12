@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute>
+<displayName>CrashPlan - Last Backup </displayName>
+<description>This attribute displays the last time CrashPlan ran a backup.  This attribute applies to both Mac .</description>
+<dataType>date</dataType>
+<scriptContentsMac>#!/bin/sh&#13;
+CP_ServerAddress='Your Code 42 server'&#13;
+CP_ServerPort="code 42 port number"&#13;
+CP_AdminUsername="code42 api user"&#13;
+CP_AdminPassword="code 42 api password "&#13;
+&#13;
+if [ "$CP_ServerAddress" == "" ] || [ "$CP_ServerPort" == "" ] || [ "$CP_AdminUsername" == "" ] || [ "$CP_AdminPassword" == "" ];then&#13;
+echo "Please ensure all variables are set in the extension attribute script."&#13;
+else&#13;
+if [ -f /Library/Application\ Support/CrashPlan/.identity ];then&#13;
+	GUID=`/bin/cat /Library/Application\ Support/CrashPlan/.identity | grep guid | sed s/guid\=//g`&#13;
+	value=`/usr/bin/curl -u "$CP_AdminUsername":"$CP_AdminPassword" -k https://"$CP_ServerAddress":"$CP_ServerPort"/api/DeviceBackupReport/?deviceUid="$GUID" | python -m json.tool | grep lastCompletedBackupDate | awk '{print $2}' |   sed s/,//g | sed 's/.\(.*\)/\1/'| sed 's/T/ /' | cut -c -19`&#13;
+	result=`/bin/date -j -f "%Y-%m-%dT%H:%M:%S" "$value" "+%Y-%m-%d %H:%M:%S"`&#13;
+	echo "&lt;result&gt;$value&lt;/result&gt;"&#13;
+else&#13;
+	echo "&lt;result&gt;Not installed&lt;/result&gt;"&#13;
+fi&#13;
+fi&#13;
+	</scriptContentsMac>
+
+</extensionAttribute>

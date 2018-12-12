@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><extensionAttribute><displayName>PresSTORE - Last Backup End Time</displayName><displayInCategory>Backup</displayInCategory><dataType>date</dataType><description>This attribute displays the last time the client finished submitting a backup to the server. This attribute is compatible with PresSTORE 4.3 and higher. This attribute applies to Mac only.
+</description><scriptContentsMac>#!/bin/sh
+
+if [ -f /usr/local/aw/bin/nsdchat ]; then 
+    cd /usr/local/aw
+    workstation=`bin/nsdchat -c Server names`
+    lastend=`bin/nsdchat -c Server $workstation lastend`
+    lasterror=`bin/nsdchat -c Server $workstation lasterror`
+
+    if [ "$lastend" != "" ] &amp;&amp; [ "$lasterror" == "&lt;empty&gt;" ]; then
+        lastenddate=`date -j -f %s $lastend +"%Y/%m/%d %H:%M:%S"`
+        echo "&lt;result&gt;Last backup ended $lastenddate with no errors.&lt;/result&gt;"
+    else 
+        lastenddate=`date -j -f %s $lastend +"%m/%d/%y %H:%M:%S"`
+        echo "&lt;result&gt;Last backup ended $lastenddate with $lasterror error(s).&lt;/result&gt;"
+    fi
+
+    
+
+else 
+    echo "&lt;result&gt;Not installed&lt;/result&gt;"
+fi
+</scriptContentsMac><scriptContentsWin>
+</scriptContentsWin></extensionAttribute>

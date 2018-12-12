@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE extensionAttribute PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<extensionAttribute>
+  <displayName>Gatekeeper Status</displayName>
+  <displayInCategory/>
+  <dataType>string</dataType>
+  <description>This will display the current status of Gatekeeper (visible under System Preferences &gt; Security &amp; Privacy &gt; General).</description>
+  <scriptContentsMac>#!/bin/sh
+
+TESTFILE="/usr/sbin/jamf/"
+
+CMD="`spctl -v -a $TESTFILE 2&gt;&amp;1`"
+
+case "$CMD" in
+	*rejected*)
+		STATUS="Mac App Store"
+	;;	
+	*override=security*)
+		STATUS="Anywhere"
+	;;
+	*)
+		STATUS="Mac App Store and identified developers"	
+	;;
+esac
+
+echo "&lt;result&gt;$STATUS&lt;/result&gt;"</scriptContentsMac>
+</extensionAttribute>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensionAttribute>
+<displayName>SmartCard User</displayName>
+<displayInCategory>Device Security</displayInCategory>
+<dataType>string</dataType>
+<description>Displays which local user account has been SmartCard enabled and with what type of SmartCard. Requires macOS 10.12.
+</description>
+<scriptContentsMac>#!/bin/sh
+# Regex for OS detection +10.12
+OSREGEX="^1[2-9]$"
+# Gets the OS version
+OSVERS=$(/usr/bin/sw_vers -productVersion | /usr/bin/awk -F. '{print $2}')
+if [[ $OSVERS =~ $OSREGEX ]]; then
+	scuser=`sc_auth identities | sed -n '3p' | awk '{print $2}'`
+	scusertype=`sc_auth identities | sed -n '3p' | awk '{print $6}'`
+else
+	echo "&lt;result&gt;No Users have been SmartCard enabled.&lt;/result&gt;"
+fi
+if [ "$scuser" != "" ]; then
+        echo "&lt;result&gt;$scuser - $scusertype&lt;/result&gt;"
+else 
+	echo "&lt;result&gt;No Users have been SmartCard enabled&lt;/result&gt;"
+fi
+</scriptContentsMac>
+</extensionAttribute>
