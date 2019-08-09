@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Get macOS version info
+osVersionFirst=$(sw_vers -productVersion | awk -F. '{print $1}')
+osVersionSecond=$(sw_vers -productVersion | awk -F. '{print $2}')
+
+if [[ $osVersionFirst -ge 10 ]] && [[ $osVersionSecond -ge 13 ]]; then
+	SUPending=`softwareupdate --list --no-scan | grep -i ")," | cut -f1 -d","`
+	echo "<result>$(printf '%s\n' "$SUPending")</result>"
+else
+	# Return EA Result, 10.12.6 or below
+	echo "<result>`echo Unsupported macOS - Requires 10.13 or above`</result>"
+fi
